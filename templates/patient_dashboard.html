@@ -13,7 +13,7 @@
         <div class="profile-details">
             <p><strong>Name:</strong> {{ user.full_name }}</p>
             # In your patient_dashboard.html template, modify the age calculation:
-            <p><strong>Age:</strong> {{ ((current_date - user.dob.replace(tzinfo=timezone.utc)).days // 365) if user.dob else 'Not specified' }}, <strong>Gender:</strong> {{ user.gender if user.gender else 'Not specified' }}</p>
+            <p><strong>Age:</strong> {{ age if age is not none else 'Not specified' }}, <strong>Gender:</strong> {{ user.gender if user.gender else 'Not specified' }}</p>
             <p><strong>DOB:</strong> {{ user.dob.strftime('%d/%m/%Y') if user.dob else 'Not specified' }}, <strong>Patient ID:</strong> {{ user.id }}</p>
             <p><strong>Health Conditions:</strong> {{ user.health_conditions if user.health_conditions else 'None' }}</p>
             <div class="health-metrics">

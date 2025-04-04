@@ -319,7 +319,7 @@ def patient_dashboard():
         except Exception as e:
             db.session.rollback()
             flash(f'Error booking appointment: {str(e)}', 'error')
-            print(f"Database error: {e}")  # Debugging
+            print(f"Database error: {e}")
         return redirect(url_for('patient_dashboard'))
 
     # Fetch appointments for display
@@ -337,6 +337,11 @@ def patient_dashboard():
             'status': appointment.status
         })
 
+    # Calculate age
+    age = None
+    if current_user.dob:
+        age = (current_date - current_user.dob.replace(tzinfo=timezone.utc)).days // 365
+
     # Pass required data to template
     next_appointment = appointments_data[0]['appointment'] if appointments_data else None
     next_appointment_date = next_appointment.date if next_appointment else current_date + timedelta(days=30)
@@ -352,9 +357,9 @@ def patient_dashboard():
         next_appointment_date=next_appointment_date,
         days_in_month=days_in_month,
         start_day=start_day,
-        current_date=current_date
+        current_date=current_date,
+        age=age  # Add age to the template context
     )
-
 @app.route('/doctor_dashboard')
 @login_required
 def doctor_dashboard():
