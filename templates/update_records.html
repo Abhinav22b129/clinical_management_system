@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="update-container">
+    <h2>Update Patient Records</h2>
+    <form action="/update_records" method="POST">
+        <label for="patient">Select Patient:</label>
+        <select id="patient" name="patient" required>
+            <!-- Populate with patients from the database -->
+            <option value="patient1">Patient 1</option>
+            <option value="patient2">Patient 2</option>
+        </select>
+        
+        <label for="record">Update Record:</label>
+        <textarea id="record" name="record" required></textarea>
+        
+        <button type="submit">Update Record</button>
+    </form>
+</div>
+{% endblock %}

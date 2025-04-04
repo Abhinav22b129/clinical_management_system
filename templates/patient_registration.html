@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="registration-container">
+    <h2>Patient Registration</h2>
+    <form action="/register_patient" method="POST">
+        <label for="name">Full Name:</label>
+        <input type="text" id="name" name="name" required>
+        
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob" required>
+        
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender" required>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+        </select>
+        
+        <label for="contact">Contact Number:</label>
+        <input type="text" id="contact" name="contact" required>
+        
+        <button type="submit">Register Patient</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMS - Clinic Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; margin: 0; }
+        body { font-family: 'Poppins', sans-serif; background-color: #e8f1f2; color: #333; line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; }
+
+        .top-nav { background: linear-gradient(90deg, #1abc9c, #16a085); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); position: sticky; top: 0; z-index: 1001; }
+        .logo { display: flex; align-items: center; }
+        .logo img { height: 40px; margin-right: 10px; border-radius: 5px; }
+        .logo span { color: #fff; font-size: 1.8rem; font-weight: 600; }
+        .nav-links { list-style: none; display: flex; gap: 2rem; }
+        .nav-links li { display: inline-block; }
+        .nav-links a { color: #fff; text-decoration: none; font-weight: 400; font-size: 1.1rem; transition: color 0.3s ease, transform 0.3s ease; }
+        .nav-links a:hover { color: #ff6f61; transform: scale(1.05); }
+
+        .main-content { max-width: 1200px; margin: 0 auto; padding: 2rem; flex: 1; transition: padding-left 0.3s ease; }
+        .flash-message { padding: 1rem; margin-bottom: 1rem; border-radius: 8px; color: #fff; font-weight: 400; animation: slideIn 0.5s ease-out; }
+        .flash-message.success { background-color: #2ecc71; }
+        .flash-message.error { background-color: #e74c3c; }
+
+        .custom-footer { background: linear-gradient(90deg, #2c3e50, #34495e); color: #ecf0f1; padding: 3rem 2rem; flex-shrink: 0; }
+        .footer-content { display: flex; justify-content: space-around; flex-wrap: wrap; max-width: 1200px; margin: 0 auto; gap: 2rem; }
+        .footer-column { flex: 1; min-width: 200px; }
+        .footer-column h4 { font-size: 1.3rem; margin-bottom: 1rem; color: #1abc9c; }
+        .footer-column ul { list-style: none; }
+        .footer-column a { color: #ecf0f1; text-decoration: none; display: block; margin-bottom: 0.5rem; font-size: 0.9rem; transition: color 0.3s ease, transform 0.3s ease; }
+        .footer-column a:hover { color: #ff6f61; transform: translateX(5px); }
+        .social-links { display: flex; gap: 1rem; }
+        .social-links a { font-size: 1.2rem; transition: transform 0.3s ease; }
+        .social-links a:hover { transform: scale(1.2); }
+        .footer-bottom { text-align: center; padding-top: 2rem; border-top: 1px solid #34495e; margin-top: 2rem; font-size: 0.9rem; }
+
+        @media (max-width: 768px) {
+            .top-nav { flex-direction: column; gap: 1rem; }
+            .nav-links { flex-direction: column; gap: 1rem; text-align: center; }
+            .main-content { margin-left: 0; padding: 1rem; }
+            .footer-content { flex-direction: column; text-align: center; }
+        }
+
+        @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation (Hidden for Admin) -->
+    {% if not current_user.is_authenticated or not current_user.is_admin %}
+    <nav class="top-nav">
+        <div class="logo">
+            <span>CMS</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('dashboard') }}">Consult Now</a></li>
+                <li><a href="{{ url_for('medicine_delivery') }}">Medicine</a></li>
+                <li><a href="{{ url_for('manage_labs') }}">Lab Test & Packages</a></li>
+                <li><a href="{{ url_for('about_us') }}">About Us</a></li>
+                {% if current_user.is_admin %}
+                    <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                {% elif current_user.is_doctor %}
+                    <li><a href="{{ url_for('doctor_dashboard') }}">Dashboard</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('patient_dashboard') }}">Dashboard</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            {% else %}
+                <li><a href="{{ url_for('login') }}">Consult Now</a></li>
+                <li><a href="{{ url_for('medicine_delivery') }}">Medicine</a></li>
+                <li><a href="{{ url_for('manage_labs') }}">Lab Test & Packages</a></li>
+                <li><a href="{{ url_for('about_us') }}">About Us</a></li>
+                <li><a href="{{ url_for('login') }}">Login</a></li>
+                <li><a href="{{ url_for('register') }}">Register</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+
+    <div class="main-content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!-- Footer (Hidden for Admin) -->
+    {% if not current_user.is_authenticated or not current_user.is_admin %}
+    <footer class="custom-footer">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h4>Health</h4>
+                <ul>
+                    <li><a href="{{ url_for('medicine_delivery') }}">Book Medicines</a></li>
+                    {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('dashboard') }}">Consult Now</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('login') }}">Consult Now</a></li>
+                    {% endif %}
+                    <li><a href="{{ url_for('manage_labs') }}">Book a Lab Test</a></li>
+                    <li><a href="{{ url_for('covid_services') }}">Covid Essential Items</a></li>
+                    <li><a href="{{ url_for('dental_care') }}">Dental</a></li>
+                    <li><a href="#">Cancer Care</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Hospitalization</h4>
+                <ul>
+                    <li><a href="#">Locate Hospital</a></li>
+                    <li><a href="#">Download eCard</a></li>
+                    <li><a href="#">Track Claim</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Our Policies</h4>
+                <ul>
+                    <li><a href="#">Terms of Use</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Grievance Redressal</a></li>
+                    <li><a href="#">Cancellation & Refund Policy</a></li>
+                    <li><a href="#">Security at Clinical Buddy Balance</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>About</h4>
+                <ul>
+                    <li><a href="#">Overview</a></li>
+                    <li><a href="#">Testimonials</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Security</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Download App</h4>
+                <ul>
+                    <li><a href="#">Google Play</a></li>
+                    <li><a href="#">App Store</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Follow Us</h4>
+                <ul class="social-links">
+                    <li><a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
+                    <li><a href="#" target="_blank"><i class="fab fa-twitter"></i></a></li>
+                    <li><a href="#" target="_blank"><i class="fab fa-instagram"></i></a></li>
+                    <li><a href="#" target="_blank"><i class="fab fa-linkedin-in"></i></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Clinical Buddy Balance. All rights reserved.</p>
+        </div>
+    </footer>
+    {% endif %}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+</body>
+</html>

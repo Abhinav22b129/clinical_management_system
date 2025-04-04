@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Add Doctor{% endblock %}
+
+{% block content %}
+    <div class="register-hero">
+        <div class="register-form-container">
+            <div class="form-header">
+                <h2 class="register-title">Add New Doctor</h2>
+            </div>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            <form method="POST" action="{{ url_for('add_doctor') }}" class="register-form">
+                {{ form.hidden_tag() }}
+                <div class="input-group">
+                    {{ form.full_name.label }} {{ form.full_name(class="input-field") }}
+                </div>
+                <div class="input-group">
+                    {{ form.email.label }} {{ form.email(class="input-field") }}
+                </div>
+                <div class="input-group">
+                    {{ form.phone.label }} {{ form.phone(class="input-field") }}
+                </div>
+                <div class="input-group">
+                    {{ form.username.label }} {{ form.username(class="input-field") }}
+                </div>
+                <div class="input-group">
+                    {{ form.password.label }} {{ form.password(class="input-field") }}
+                </div>
+                <button type="submit" class="register-btn">Add Doctor</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

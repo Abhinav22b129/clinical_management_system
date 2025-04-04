@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>Admin Panel</h3>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="{{ url_for('admin_dashboard') }}" class="nav-item">Dashboard</a></li>
+            <li><a href="{{ url_for('manage_doctors') }}" class="nav-item">Manage Doctors</a></li>
+            <li><a href="{{ url_for('manage_medicines') }}" class="nav-item">Manage Medicines</a></li>
+            <li><a href="{{ url_for('manage_labs') }}" class="nav-item">Manage Labs</a></li>
+            <li><a href="{{ url_for('view_database') }}" class="nav-item active">View Database</a></li>
+            <li><a href="{{ url_for('logout') }}" class="nav-item">Logout</a></li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="dashboard-content">
+        <div class="dashboard-header">
+            <h2>Database Details</h2>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Users Table -->
+        <div class="summary-section">
+            <div class="summary-card">
+                <h3>Users</h3>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <thead>
+                        <tr style="background: #0d47a1; color: #fff;">
+                            <th style="padding: 10px; border: 1px solid #ddd;">ID</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Full Name</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Email</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Phone</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Username</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Age</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Gender</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr style="background: #f9f9f9;">
+                            <td style="padding: 10px; border: 1px solid #ddd;">{{ user.id }}</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{{ user.full_name }}</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{{ user.email }}</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{{ user.phone }}</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{{ user.username }}</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{{ user.age or 'N/A' }}</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{{ user.gender or 'N/A' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Appointments Table -->
+        <div class="summary-section">
+            <div class="summary-card">
+                <h3>Appointments</h3>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <thead>
+                        <tr style="background: #0d47a1; color: #fff;">
+                            <th style="padding: 10px; border: 1px solid #ddd;">ID</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">User ID</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Doctor ID</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Date & Time</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Reason</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appointment in appointments %}
+                        <tr style="background: #f9f9f9;">
+                            <td style="padding: 10px; border: 1px solid #ddd;">{{ appointment.id }}</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{{ appointment.user_id }}</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{{ appointment.doctor_id }}</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{{ appointment.date_time }}</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{{ appointment.reason or 'N/A' }}</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{{ appointment.status }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Medicines Table -->
+        <div class="summary-section">
+            <div class="summary-card">
+                <h3>Medicines</h3>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <thead>
+                        <tr style="background: #0d47a1; color: #fff;">
+                            <th style="padding: 10px; border: 1px solid #ddd;">ID</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Name</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Description</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Price</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for medicine in medicines %}
+                        <tr style="background: #f9f9f9;">
+                            <td style="padding: 10px; border: 1px solid #ddd;">{{ medicine.id }}</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{{ medicine.name }}</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{{ medicine.description or 'N/A' }}</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">${{ medicine.price }}</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{{ medicine.stock }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Labs Table -->
+        <div class="summary-section">
+            <div class="summary-card">
+                <h3>Labs</h3>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <thead>
+                        <tr style="background: #0d47a1; color: #fff;">
+                            <th style="padding: 10px; border: 1px solid #ddd;">ID</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Name</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Location</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Contact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lab in labs %}
+                        <tr style="background: #f9f9f9;">
+                            <td style="padding: 10px; border: 1px solid #ddd;">{{ lab.id }}</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{{ lab.name }}</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{{ lab.location or 'N/A' }}</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{{ lab.contact or 'N/A' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Prescriptions Table -->
+        <div class="summary-section">
+            <div class="summary-card">
+                <h3>Prescriptions</h3>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <thead>
+                        <tr style="background: #0d47a1; color: #fff;">
+                            <th style="padding: 10px; border: 1px solid #ddd;">ID</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Appointment ID</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Medicine ID</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Dosage</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Instructions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for prescription in prescriptions %}
+                        <tr style="background: #f9f9f9;">
+                            <td style="padding: 10px; border: 1px solid #ddd;">{{ prescription.id }}</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{{ prescription.appointment_id }}</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{{ prescription.medicine_id }}</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{{ prescription.dosage or 'N/A' }}</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">{{ prescription.instructions or 'N/A' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

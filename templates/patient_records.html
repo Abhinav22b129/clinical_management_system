@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+{% block title %}Patient Records - CMS{% endblock %}
+
+{% block content %}
+<div class="patient-records-page">
+    <!-- Patient Profile -->
+    <div class="patient-profile">
+        <div class="profile-header">
+            <img src="https://via.placeholder.com/100" alt="Profile Picture" class="profile-pic">
+            <h2>Patient Profile</h2>
+        </div>
+        <div class="profile-details">
+            <p><strong>Name:</strong> {{ user.full_name }}</p>
+            <p><strong>Age:</strong> 73, <strong>Gender:</strong> Female</p>
+            <p><strong>DOB:</strong> 13/08/1950, <strong>Patient ID:</strong> {{ user.id }}</p>
+            <p><strong>Health Conditions:</strong> Heart Condition</p>
+            <div class="health-metrics">
+                <button class="metric-btn">Heart</button>
+                <button class="metric-btn">Mental Health</button>
+                <button class="metric-btn">Blood Pressure</button>
+            </div>
+        </div>
+        <div class="checkup-reminder">
+            <p><strong>Latest Check-Up:</strong> 12/09/2021 <i class="fas fa-exclamation-circle"></i></p>
+            <p>It's time for a medical check-up to ensure your well-being. Schedule an appointment with your healthcare provider.</p>
+        </div>
+    </div>
+
+    <!-- Upcoming Appointments -->
+    <div class="appointments-section">
+        <h2>Upcoming Appointments</h2>
+        <div class="appointments-list">
+            {% if appointments %}
+                {% for appointment in appointments %}
+                    <div class="appointment-card">
+                        <i class="fas fa-stethoscope"></i>
+                        <p>{{ appointment.title }}</p>
+                        <p>{{ appointment.date.strftime('%B %d') }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="appointment-card">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>No upcoming appointments.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Next Appointment Calendar -->
+    <div class="calendar-section">
+        <h2>Next Appointment: June 2023</h2>
+        <div class="calendar">
+            <div class="calendar-header">
+                <button><</button>
+                <p>August 12th</p>
+                <button>></button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th><th>S</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>27</td><td>28</td><td>29</td><td>30</td><td>31</td><td>1</td><td>2</td></tr>
+                    <tr><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>
+                    <tr><td>10</td><td>11</td><td class="highlight">12</td><td>13</td><td>14</td><td>15</td><td>16</td></tr>
+                    <tr><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td></tr>
+                    <tr><td>24</td><td>25</td><td>26</td><td>27</td><td>28</td><td>29</td><td>30</td></tr>
+                    <tr><td>31</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Find Specialist -->
+    <div class="specialist-section">
+        <h2>Find Specialist</h2>
+        <div class="specialist-grid">
+            <div class="specialist-card"><i class="fas fa-stethoscope"></i><p>General</p></div>
+            <div class="specialist-card"><i class="fas fa-tooth"></i><p>Dentist</p></div>
+            <div class="specialist-card"><i class="fas fa-hand-holding-heart"></i><p>Dermatologist</p></div>
+            <div class="specialist-card"><i class="fas fa-utensils"></i><p>Dietitian</p></div>
+            <div class="specialist-card"><i class="fas fa-brain"></i><p>Neurologist</p></div>
+            <div class="specialist-card"><i class="fas fa-heartbeat"></i><p>Psychologist</p></div>
+        </div>
+    </div>
+
+    <!-- Prescribed Medications -->
+    <div class="prescriptions-section">
+        <h2>Prescribed Medications</h2>
+        <div class="prescriptions-grid">
+            {% if prescriptions %}
+                {% for prescription in prescriptions %}
+                    <div class="prescription-card">
+                        <i class="fas fa-pills"></i>
+                        <p>{{ prescription.name }}</p>
+                        <p><strong>Dosage:</strong> {{ prescription.dosage }}</p>
+                        <p><strong>Date Issued:</strong> {{ prescription.date_issued.strftime('%b %d, %Y') }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="prescription-card">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>No prescriptions available.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Medical Conditions (Consultations as Proxy) -->
+    <div class="conditions-section">
+        <h2>Medical Conditions</h2>
+        <div class="conditions-grid">
+            {% if consultations %}
+                {% for consultation in consultations %}
+                    <div class="condition-card">
+                        <i class="fas fa-heartbeat"></i>
+                        <p>{{ consultation.health_problem }}</p>
+                        <p><strong>Symptoms:</strong> {{ consultation.symptoms }}</p>
+                        <p><strong>Diagnosed:</strong> {{ consultation.date_submitted.strftime('%b %d, %Y') }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="condition-card">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>No medical conditions recorded.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Healthcare Team -->
+    <div class="healthcare-team">
+        <h2>Your Healthcare Team</h2>
+        <div class="team-grid">
+            <div class="team-member">
+                <img src="https://via.placeholder.com/50" alt="Doctor">
+                <p><strong>Dental Specialist:</strong> Martina Trendy</p>
+            </div>
+            <div class="team-member">
+                <img src="https://via.placeholder.com/50" alt="Doctor">
+                <p><strong>Mental Health Specialist:</strong> Dr. John Smith</p>
+            </div>
+            <div class="team-member">
+                <img src="https://via.placeholder.com/50" alt="Doctor">
+                <p><strong>Primary Care Physician:</strong> Dr. Sarah Wilson</p>
+            </div>
+            <div class="team-member">
+                <img src="https://via.placeholder.com/50" alt="Doctor">
+                <p><strong>Holistic Practitioner:</strong> Dr. Emily Stone</p>
+            </div>
+            <div class="team-member">
+                <img src="https://via.placeholder.com/50" alt="Doctor">
+                <p><strong>Nutrition Expert:</strong> Dr. Rachel Lee</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .patient-records-page { display: flex; flex-wrap: wrap; gap: 2rem; padding: 2rem; background-color: #000; min-height: calc(100vh - 200px); }
+    .patient-profile, .appointments-section, .calendar-section, .specialist-section, .prescriptions-section, .conditions-section, .healthcare-team {
+        background-color: #1c2526; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); flex: 1; min-width: 300px; color: #fff;
+    }
+    .patient-profile { background-color: #2c3e50; }
+    .profile-header { display: flex; align-items: center; gap: 1rem; }
+    .profile-pic { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; }
+    .profile-header h2 { font-size: 1.8rem; margin-bottom: 1rem; }
+    .profile-details p { font-size: 1rem; margin: 0.5rem 0; }
+    .health-metrics { display: flex; gap: 0.5rem; margin-top: 1rem; }
+    .metric-btn { background-color: #34495e; color: #ecf0f1; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; transition: background 0.3s ease; }
+    .metric-btn:hover { background-color: #1abc9c; }
+    .checkup-reminder { background-color: #34495e; padding: 1rem; border-radius: 8px; margin-top: 1rem; font-size: 0.9rem; }
+    .checkup-reminder i { color: #e74c3c; }
+    .appointments-section h2, .calendar-section h2, .specialist-section h2, .prescriptions-section h2, .conditions-section h2, .healthcare-team h2 { font-size: 1.8rem; margin-bottom: 1rem; }
+    .appointments-list, .specialist-grid, .prescriptions-grid, .conditions-grid, .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; }
+    .appointment-card, .specialist-card, .prescription-card, .condition-card, .team-member {
+        background-color: #f5f6fa; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); text-align: center; color: #2c3e50; transition: transform 0.3s ease;
+    }
+    .appointment-card:hover, .specialist-card:hover, .prescription-card:hover, .condition-card:hover, .team-member:hover { transform: translateY(-5px); }
+    .appointment-card i, .specialist-card i, .prescription-card i, .condition-card i { font-size: 1.5rem; margin-bottom: 0.5rem; color: #1abc9c; }
+    .appointment-card p, .specialist-card p, .prescription-card p, .condition-card p, .team-member p { font-size: 0.9rem; margin: 0.25rem 0; }
+    .schedule-btn { background-color: #1abc9c; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; margin-top: 0.5rem; transition: background 0.3s ease; }
+    .schedule-btn:hover { background-color: #16a085; }
+    .calendar-section { min-width: 250px; }
+    .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .calendar-header button { background: none; border: none; color: #fff; font-size: 1.2rem; cursor: pointer; }
+    .calendar table { width: 100%; border-collapse: collapse; }
+    .calendar th, .calendar td { text-align: center; padding: 0.5rem; font-size: 0.9rem; }
+    .calendar th { color: #ecf0f1; }
+    .calendar td { background-color: #f5f6fa; color: #2c3e50; border-radius: 5px; }
+    .calendar .highlight { background-color: #1abc9c; color: #fff; }
+    .team-member img { width: 50px; height: 50px; border-radius: 50%; margin-bottom: 0.5rem; }
+    @media (max-width: 768px) { .patient-records-page { padding: 1rem; flex-direction: column; } }
+</style>
+{% endblock %}

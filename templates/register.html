@@ -1,0 +1,310 @@
+<!-- templates/register.html -->
+{% extends "base.html" %}
+{% block content %}
+    <div class="register-page">
+        <div class="register-container">
+            <div class="register-card">
+                <div class="register-header">
+                    <img src="{{ url_for('static', filename='images/clinic-logo.png') }}" alt="Clinic Logo" class="register-logo">
+                    <h2 class="register-title">Create Your Patient Account</h2>
+                    <p class="register-subtitle">Join us to manage your health journey.</p>
+                </div>
+
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="flash-message {{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <!-- Register Form -->
+                <form method="POST" action="{{ url_for('register') }}" class="register-form" id="register-form">
+                    {{ form.hidden_tag() }}
+                    <div class="input-group">
+                        <label for="username">{{ form.username.label }}</label>
+                        {{ form.username(id="username", placeholder="Enter your username", class="input-field") }}
+                    </div>
+                    <div class="input-group">
+                        <label for="full_name">{{ form.full_name.label }}</label>
+                        {{ form.full_name(id="full_name", placeholder="Enter your full name", class="input-field") }}
+                    </div>
+                    <div class="input-group">
+                        <label for="email">{{ form.email.label }}</label>
+                        {{ form.email(id="email", placeholder="Enter your email", class="input-field") }}
+                    </div>
+                    <div class="input-group">
+                        <label for="password">{{ form.password.label }}</label>
+                        {{ form.password(id="password", placeholder="Enter your password", class="input-field") }}
+                    </div>
+                    <div class="input-group">
+                        <label for="confirm_password">{{ form.confirm_password.label }}</label>
+                        {{ form.confirm_password(id="confirm_password", placeholder="Confirm your password", class="input-field") }}
+                    </div>
+                    <div class="input-group">
+                        <label for="dob">{{ form.dob.label }}</label>
+                        {{ form.dob(id="dob", placeholder="YYYY-MM-DD", class="input-field") }}
+                    </div>
+                    <div class="input-group">
+                        <label for="gender">{{ form.gender.label }}</label>
+                        {{ form.gender(id="gender", class="input-field select-field") }}
+                    </div>
+                    <div class="input-group">
+                        <label for="health_conditions">{{ form.health_conditions.label }}</label>
+                        {{ form.health_conditions(id="health_conditions", placeholder="e.g., Diabetes, Hypertension", class="input-field textarea-field", rows="3") }}
+                    </div>
+                    <button type="submit" class="register-btn">Register Now</button>
+                </form>
+
+                <p class="login-link-text">
+                    Already have an account? <a href="{{ url_for('login') }}" class="login-link">Login here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Register Page Container */
+        .register-page {
+            min-height: calc(100vh - 200px); /* Adjust based on footer height */
+            background: linear-gradient(135deg, #e8f1f2 0%, #d1e8e2 100%); /* Soft gradient background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        /* Animated Background Elements */
+        .register-page::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(26, 188, 156, 0.1) 10%, transparent 70%);
+            animation: pulse 15s infinite ease-in-out;
+            z-index: -1;
+        }
+
+        .register-container {
+            width: 100%;
+            max-width: 520px;
+            text-align: center;
+        }
+
+        .register-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(5px); /* Glassmorphism effect */
+            animation: fadeInUp 0.8s ease-out;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+
+        .register-header {
+            margin-bottom: 2rem;
+            animation: slideInDown 0.8s ease-out;
+        }
+
+        .register-logo {
+            width: 110px;
+            height: 110px;
+            margin-bottom: 1rem;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            animation: bounceIn 1s ease-out;
+        }
+
+        .register-title {
+            font-size: 2.2rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .register-subtitle {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+
+        .flash-message {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: 400;
+            animation: slideInLeft 0.5s ease-out;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .flash-message.success {
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+        }
+
+        .flash-message.error {
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+        }
+
+        .register-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.8rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            position: relative;
+        }
+
+        .input-group label {
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-field {
+            padding: 0.9rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: #f9fbfc;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .select-field {
+            appearance: none;
+            background: url('data:image/svg+xml;utf8,<svg fill="%237f8c8d" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 0.75rem center/12px 12px;
+        }
+
+        .textarea-field {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .input-field:focus {
+            border-color: #1abc9c;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(26, 188, 156, 0.3);
+            outline: none;
+            transform: scale(1.02);
+        }
+
+        .input-field::placeholder {
+            color: #bdc3c7;
+            font-style: italic;
+        }
+
+        .register-btn {
+            background: linear-gradient(90deg, #1abc9c, #16a085);
+            color: #fff;
+            padding: 0.9rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(26, 188, 156, 0.4);
+        }
+
+        .register-btn:hover {
+            background: linear-gradient(90deg, #16a085, #1abc9c);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(26, 188, 156, 0.6);
+        }
+
+        .register-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 10px rgba(26, 188, 156, 0.3);
+        }
+
+        .login-link-text {
+            font-size: 0.95rem;
+            color: #7f8c8d;
+            margin-top: 1.5rem;
+            font-weight: 300;
+        }
+
+        .login-link {
+            color: #ff6f61;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .login-link:hover {
+            color: #e74c3c;
+            text-decoration: underline;
+            transform: scale(1.05);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.3); }
+            50% { opacity: 1; transform: scale(1.05); }
+            70% { transform: scale(0.95); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.3; }
+            100% { transform: scale(1); opacity: 0.5; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .register-card {
+                padding: 1.5rem;
+            }
+            .register-title {
+                font-size: 1.8rem;
+            }
+            .register-subtitle {
+                font-size: 1rem;
+            }
+            .register-logo {
+                width: 80px;
+                height: 80px;
+            }
+            .input-field {
+                padding: 0.7rem;
+            }
+            .register-btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+{% endblock %}

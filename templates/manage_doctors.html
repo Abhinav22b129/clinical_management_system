@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}MediCare - Add Doctor{% endblock %}
+
+{% block content %}
+<div class="add-doctor-page">
+    <h2>Add a New Doctor</h2>
+    <div class="form-container">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.username.label }}<br>
+                {{ form.username(class="form-control") }}<br>
+                {% for error in form.username.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.email.label }}<br>
+                {{ form.email(class="form-control") }}<br>
+                {% for error in form.email.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.full_name.label }}<br>
+                {{ form.full_name(class="form-control") }}<br>
+                {% for error in form.full_name.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.password.label }}<br>
+                {{ form.password(class="form-control") }}<br>
+                {% for error in form.password.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.confirm_password.label }}<br>
+                {{ form.confirm_password(class="form-control") }}<br>
+                {% for error in form.confirm_password.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.specialty.label }}<br>
+                {{ form.specialty(class="form-control") }}<br>
+                {% for error in form.specialty.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+
+<style>
+    .add-doctor-page {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 1rem;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-container {
+        padding: 1rem;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #e0e0e0;
+        border-radius: 5px;
+        font-size: 0.9rem;
+    }
+
+    .btn-primary {
+        background: #007bff;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 5px;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    .btn-primary:hover {
+        background: #0056b3;
+    }
+
+    .alert-success {
+        background: #d4edda;
+        color: #155724;
+        padding: 0.5rem;
+        border-radius: 5px;
+        margin-top: 1rem;
+    }
+
+    .alert-error {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 0.5rem;
+        border-radius: 5px;
+        margin-top: 1rem;
+    }
+</style>
+{% endblock %}

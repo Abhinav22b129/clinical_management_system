@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}CMS - Surgery{% endblock %}
+{% block content %}
+    <div class="dashboard">
+        <div class="dashboard-header">
+            <h2>Surgery</h2>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Schedule Form -->
+        <div class="consultation-section">
+            <h3>Schedule Surgery</h3>
+            <form method="POST" action="{{ url_for('surgery') }}" class="consultation-form">
+                {{ form.hidden_tag() }}
+                <div class="input-group">
+                    <label for="{{ form.procedure_name.id }}">Procedure Name</label>
+                    {{ form.procedure_name(class="input-field") }}
+                </div>
+                <div class="input-group">
+                    <label for="{{ form.scheduled_date.id }}">Scheduled Date (YYYY-MM-DD)</label>
+                    {{ form.scheduled_date(class="input-field") }}
+                </div>
+                <button type="submit" class="dashboard-btn">Schedule Surgery</button>
+            </form>
+        </div>
+
+        <!-- Schedules List -->
+        <div class="summary-section">
+            <div class="summary-card">
+                <h3>Your Surgery Schedules</h3>
+                {% if schedules %}
+                    <ul class="consultation-list">
+                        {% for schedule in schedules %}
+                            <li>
+                                <span>Procedure: {{ schedule.procedure_name }}</span>
+                                <span>Date: {{ schedule.scheduled_date.strftime('%Y-%m-%d') }}</span>
+                                <span>Status: {{ schedule.status }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No surgery schedules yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

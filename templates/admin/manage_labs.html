@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Labs{% endblock %}
+
+{% block content %}
+    <div class="dashboard">
+        <h2>Manage Labs</h2>
+        <ul>
+            {% for lab in labs %}
+                <li>{{ lab.name }} ({{ lab.location }}) - <a href="#">Edit</a> | <a href="#">Delete</a></li>
+            {% else %}
+                <li>No labs found.</li>
+            {% endfor %}
+        </ul>
+        <p><a href="{{ url_for('admin_dashboard') }}">Back to Admin Dashboard</a></p>
+    </div>
+{% endblock %}

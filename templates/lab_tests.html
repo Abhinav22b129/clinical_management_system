@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}CMS - Lab Tests{% endblock %}
+{% block content %}
+    <div class="dashboard">
+        <div class="dashboard-header">
+            <h2>Lab Tests & Packages</h2>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Order Form -->
+        <div class="consultation-section">
+            <h3>Order Lab Test</h3>
+            <form method="POST" action="{{ url_for('lab_tests') }}" class="consultation-form">
+                {{ form.hidden_tag() }}
+                <div class="input-group">
+                    <label for="{{ form.test_name.id }}">Test Name</label>
+                    {{ form.test_name(class="input-field") }}
+                </div>
+                <button type="submit" class="dashboard-btn">Order Test</button>
+            </form>
+        </div>
+
+        <!-- Orders List -->
+        <div class="summary-section">
+            <div class="summary-card">
+                <h3>Your Lab Test Orders</h3>
+                {% if orders %}
+                    <ul class="consultation-list">
+                        {% for order in orders %}
+                            <li>
+                                <span>Test: {{ order.test_name }}</span>
+                                <span>Status: {{ order.status }}</span>
+                                <span>Order Date: {{ order.order_date.strftime('%Y-%m-%d') }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No lab test orders yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

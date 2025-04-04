@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="invoice-container">
+    <h2>Generate Invoice</h2>
+    <form action="/generate_invoice" method="POST">
+        <label for="patient">Select Patient:</label>
+        <select id="patient" name="patient" required>
+            <!-- Populate with patients from the database -->
+            <option value="patient1">Patient 1</option>
+            <option value="patient2">Patient 2</option>
+        </select>
+        
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" required>
+        
+        <button type="submit">Generate Invoice</button>
+    </form>
+</div>
+{% endblock %}

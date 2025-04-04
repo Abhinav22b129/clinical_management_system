@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="appointment-container">
+    <h2>Schedule Appointment</h2>
+    <form action="/schedule_appointment" method="POST">
+        <label for="patient">Select Patient:</label>
+        <select id="patient" name="patient" required>
+            <!-- Populate with patients from the database -->
+            <option value="patient1">Patient 1</option>
+            <option value="patient2">Patient 2</option>
+        </select>
+        
+        <label for="doctor">Select Doctor:</label>
+        <select id="doctor" name="doctor" required>
+            <option value="dr_smith">Dr. Smith</option>
+            <option value="dr_jones">Dr. Jones</option>
+        </select>
+        
+        <label for="date">Select Date:</label>
+        <input type="date" id="date" name="date" required>
+        
+        <label for="time">Select Time:</label>
+        <input type="time" id="time" name="time" required>
+        
+        <button type="submit">Schedule Appointment</button>
+    </form>
+</div>
+{% endblock %}

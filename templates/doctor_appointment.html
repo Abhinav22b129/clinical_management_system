@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Book Appointment{% endblock %}
+
+{% block content %}
+    <div class="dashboard">
+        <h2>Book an Appointment</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form method="POST" action="">
+            <div class="input-group">
+                <label for="doctor">Select Doctor</label>
+                <select id="doctor" name="doctor" class="input-field" required>
+                    {% for doctor in doctors %}
+                        <option value="{{ doctor.id }}">{{ doctor.full_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="date">Date and Time</label>
+                <input type="datetime-local" id="date" name="date" class="input-field" required>
+            </div>
+            <div class="input-group">
+                <label for="reason">Reason</label>
+                <textarea id="reason" name="reason" class="input-field" rows="4" placeholder="Enter reason for appointment"></textarea>
+            </div>
+            <button type="submit" class="register-btn">Book Appointment</button>
+        </form>
+        <p><a href="{{ url_for('dashboard') }}">Back to Dashboard</a></p>
+    </div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Add Medicine{% endblock %}
+
+{% block content %}
+    <div class="register-hero">
+        <div class="register-form-container">
+            <div class="form-header">
+                <h2 class="register-title">Add New Medicine</h2>
+            </div>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            <form method="POST" action="{{ url_for('add_medicine') }}" class="register-form">
+                {{ form.hidden_tag() }}
+                <div class="input-group">
+                    {{ form.name.label }} {{ form.name(class="input-field") }}
+                </div>
+                <div class="input-group">
+                    {{ form.description.label }} {{ form.description(class="input-field") }}
+                </div>
+                <div class="input-group">
+                    {{ form.price.label }} {{ form.price(class="input-field") }}
+                </div>
+                <div class="input-group">
+                    {{ form.stock.label }} {{ form.stock(class="input-field") }}
+                </div>
+                <button type="submit" class="register-btn">Add Medicine</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

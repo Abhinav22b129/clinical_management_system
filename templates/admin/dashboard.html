@@ -1,0 +1,534 @@
+{% extends "base.html" %}
+
+{% block title %}CMS - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="admin-page">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>CMS</h3>
+            <button class="sidebar-toggle" aria-label="Toggle Sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('admin_dashboard') }}" class="nav-item active"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>
+            <a href="{{ url_for('add_doctor') }}" class="nav-item"><i class="fas fa-user-md"></i> <span>Doctors</span></a>
+            <a href="{{ url_for('patient_records') }}" class="nav-item"><i class="fas fa-users"></i> <span>Patients</span></a>
+            <a href="{{ url_for('add_medicine') }}" class="nav-item"><i class="fas fa-pills"></i> <span>Medicine</span></a>
+            <a href="{{ url_for('admin_billing') }}" class="nav-item"><i class="fas fa-file-invoice-dollar"></i> <span>Billing</span></a>
+            <a href="{{ url_for('admin_reports') }}" class="nav-item"><i class="fas fa-file-alt"></i> <span>Reports</span></a>
+            <a href="{{ url_for('admin_settings') }}" class="nav-item"><i class="fas fa-cog"></i> <span>Settings</span></a>
+            <a href="{{ url_for('logout') }}" class="nav-item"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-content">
+        <!-- Header -->
+        <div class="admin-header">
+            <div class="search-bar">
+                <input type="text" placeholder="Search...">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="admin-profile">
+                <img src="https://via.placeholder.com/40" alt="Profile Picture">
+                <span>Admin {{ current_user.full_name }}</span>
+                <i class="fas fa-bell"></i>
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="admin-stats">
+            <div class="stat-card">
+                <h3>Total Patients</h3>
+                <p class="stat-value">{{ total_patients }}</p>
+                <p class="stat-change positive">+12.5% from last month</p>
+            </div>
+            <div class="stat-card">
+                <h3>Today's Appointments</h3>
+                <p class="stat-value">{{ todays_appointments }}</p>
+                <p class="stat-change positive">+5% from yesterday</p>
+            </div>
+            <div class="stat-card">
+                <h3>Available Doctors</h3>
+                <p class="stat-value">{{ available_doctors }}</p>
+                <p class="stat-change negative">2 on leave</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Revenue</h3>
+                <p class="stat-value">${{ total_revenue }}</p>
+                <p class="stat-change positive">+8.4% from last month</p>
+            </div>
+        </div>
+
+        <!-- Recent Appointments and Available Doctors -->
+        <div class="dashboard-grid">
+            <!-- Recent Appointments -->
+            <div class="admin-section recent-appointments">
+                <h2>Recent Appointments</h2>
+                <div class="appointments-list">
+                    {% if recent_appointments %}
+                        {% for appt in recent_appointments %}
+                            <div class="appointment-card">
+                                <img src="https://via.placeholder.com/40" alt="Patient Picture">
+                                <div class="appointment-info">
+                                    <p><strong>{{ appt.patient_name }}</strong></p>
+                                    <p>{{ appt.health_problem }}</p>
+                                </div>
+                                <div class="appointment-time">
+                                    <p>{{ appt.time }}</p>
+                                    <span class="status {{ appt.status.lower() }}">{{ appt.status }}</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="appointment-card">
+                            <p>No recent appointments.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Available Doctors -->
+            <div class="admin-section available-doctors">
+                <h2>Available Doctors</h2>
+                <div class="doctors-list">
+                    {% if available_doctors_list %}
+                        {% for doctor in available_doctors_list %}
+                            <div class="doctor-card">
+                                <img src="https://via.placeholder.com/40" alt="Doctor Picture">
+                                <div class="doctor-info">
+                                    <p><strong>{{ doctor.name }}</strong></p>
+                                    <p>{{ doctor.specialty }}</p>
+                                </div>
+                                <span class="status {{ doctor.status.lower() }}">{{ doctor.status }}</span>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="doctor-card">
+                            <p>No doctors available.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<style>
+    /* Reset Base.html Conflicts */
+    .main-content {
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Admin Page Container */
+    .admin-page {
+        display: flex;
+        min-height: calc(100vh - 100px);
+        background-color: #e8f1f2;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    /* Sidebar Styling */
+    .sidebar {
+        width: 80px;
+        background: #fff;
+        color: #6c757d;
+        padding: 1rem 0;
+        position: fixed;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 1002;
+        transition: width 0.3s ease;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar:hover {
+        width: 200px;
+    }
+
+    .sidebar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .sidebar-header h3 {
+        font-size: 1.5rem;
+        color: #1abc9c;
+        margin: 0;
+        display: none;
+    }
+
+    .sidebar:hover .sidebar-header h3 {
+        display: block;
+    }
+
+    .sidebar-toggle {
+        background: none;
+        border: none;
+        color: #6c757d;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0.5rem;
+        display: none;
+    }
+
+    .sidebar-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .nav-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        color: #6c757d;
+        text-decoration: none;
+        transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .nav-item i {
+        font-size: 1.2rem;
+        margin-right: 0.5rem;
+        width: 20px;
+        text-align: center;
+    }
+
+    .nav-item span {
+        display: none;
+    }
+
+    .sidebar:hover .nav-item span {
+        display: inline;
+    }
+
+    .nav-item:hover, .nav-item.active {
+        background: #1abc9c;
+        color: #fff;
+    }
+
+    /* Main Content Styling */
+    .dashboard-content {
+        margin-left: 80px;
+        padding: 1rem;
+        flex: 1;
+        min-height: 100vh;
+        width: calc(100% - 80px);
+        box-sizing: border-box;
+        transition: margin-left 0.3s ease, width 0.3s ease;
+    }
+
+    .sidebar:hover ~ .dashboard-content {
+        margin-left: 200px;
+        width: calc(100% - 200px);
+    }
+
+    /* Admin Header */
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .search-bar {
+        position: relative;
+        width: 300px;
+    }
+
+    .search-bar input {
+        width: 100%;
+        padding: 0.5rem 1rem 0.5rem 2.5rem;
+        border: 1px solid #e0e0e0;
+        border-radius: 20px;
+        font-size: 0.9rem;
+    }
+
+    .search-bar i {
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+    }
+
+    .admin-profile {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .admin-profile img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+    }
+
+    .admin-profile span {
+        font-size: 1rem;
+        color: #333;
+    }
+
+    .admin-profile i {
+        color: #dc3545;
+        font-size: 1.2rem;
+        position: relative;
+    }
+
+    .admin-profile i::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 8px;
+        height: 8px;
+        background: #dc3545;
+        border-radius: 50%;
+        border: 2px solid #fff;
+    }
+
+    /* Stats Section */
+    .admin-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+        background: #fff;
+        padding: 1rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .stat-card h3 {
+        font-size: 1rem;
+        color: #6c757d;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-change {
+        font-size: 0.8rem;
+    }
+
+    .stat-change.positive {
+        color: #28a745;
+    }
+
+    .stat-change.negative {
+        color: #dc3545;
+    }
+
+    /* Dashboard Grid */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1rem;
+    }
+
+    /* Recent Appointments */
+    .recent-appointments {
+        background: #fff;
+        padding: 1rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .recent-appointments h2 {
+        font-size: 1.2rem;
+        color: #333;
+        margin-bottom: 1rem;
+    }
+
+    .appointments-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .appointment-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.5rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .appointment-card:last-child {
+        border-bottom: none;
+    }
+
+    .appointment-card img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 0.5rem;
+    }
+
+    .appointment-info {
+        flex: 1;
+    }
+
+    .appointment-info p {
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    .appointment-info p:first-child {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .appointment-info p:last-child {
+        color: #6c757d;
+    }
+
+    .appointment-time {
+        text-align: right;
+    }
+
+    .appointment-time p {
+        font-size: 0.9rem;
+        color: #333;
+        margin-bottom: 0.25rem;
+    }
+
+    .status {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        color: #fff;
+    }
+
+    .status.confirmed {
+        background: #28a745;
+    }
+
+    .status.pending {
+        background: #dc3545;
+    }
+
+    /* Available Doctors */
+    .available-doctors {
+        background: #fff;
+        padding: 1rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .available-doctors h2 {
+        font-size: 1.2rem;
+        color: #333;
+        margin-bottom: 1rem;
+    }
+
+    .doctors-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .doctor-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.5rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .doctor-card:last-child {
+        border-bottom: none;
+    }
+
+    .doctor-card img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 0.5rem;
+    }
+
+    .doctor-info {
+        flex: 1;
+    }
+
+    .doctor-info p {
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    .doctor-info p:first-child {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .doctor-info p:last-child {
+        color: #6c757d;
+    }
+
+    .status.available {
+        color: #28a745;
+        font-size: 0.9rem;
+    }
+
+    .status.in-surgery {
+        color: #dc3545;
+        font-size: 0.9rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .sidebar {
+            width: 60px;
+        }
+
+        .sidebar:hover {
+            width: 200px;
+        }
+
+        .dashboard-content {
+            margin-left: 60px;
+            width: calc(100% - 60px);
+            padding: 0.5rem;
+        }
+
+        .sidebar:hover ~ .dashboard-content {
+            margin-left: 200px;
+            width: calc(100% - 200px);
+        }
+
+        .admin-header {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .search-bar {
+            width: 100%;
+        }
+
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}

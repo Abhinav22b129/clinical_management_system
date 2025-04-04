@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}CMS - About Us{% endblock %}
+
+{% block content %}
+    <div class="about-page">
+        <!-- About Hero Section -->
+        <div class="about-hero-section">
+            <div class="about-hero-content">
+                <h1>About Clinical Buddy Balance</h1>
+                <p>Your trusted partner in health and wellness, dedicated to providing top-notch medical services.</p>
+            </div>
+            <div class="about-hero-image">
+                <img src="{{ url_for('static', filename='images/about-bg.jpg') }}" alt="About Background">
+            </div>
+        </div>
+
+        <!-- Mission Section -->
+        <div class="mission-section">
+            <h2>Our Mission</h2>
+            <div class="mission-container">
+                <div class="mission-card">
+                    <i class="fas fa-heartbeat"></i>
+                    <h3>Quality Care</h3>
+                    <p>We ensure the highest standards of medical care for all patients.</p>
+                </div>
+                <div class="mission-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Patient-Centered</h3>
+                    <p>Your health and comfort are our top priorities.</p>
+                </div>
+                <div class="mission-card">
+                    <i class="fas fa-stethoscope"></i>
+                    <h3>Expert Team</h3>
+                    <p>Our team of professionals is here to support you every step of the way.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Section -->
+        <div class="team-section">
+            <h2>Meet Our Team</h2>
+            <div class="team-container">
+                <div class="team-card">
+                    <img src="{{ url_for('static', filename='images/team-member1.jpg') }}" alt="Team Member">
+                    <div class="team-info">
+                        <p>Dr. John Doe</p>
+                        <p>Chief Medical Officer</p>
+                    </div>
+                </div>
+                <div class="team-card">
+                    <img src="{{ url_for('static', filename='images/team-member2.jpg') }}" alt="Team Member">
+                    <div class="team-info">
+                        <p>Dr. Jane Smith</p>
+                        <p>Head of Patient Care</p>
+                    </div>
+                </div>
+                <div class="team-card">
+                    <img src="{{ url_for('static', filename='images/team-member3.jpg') }}" alt="Team Member">
+                    <div class="team-info">
+                        <p>Dr. Emily Johnson</p>
+                        <p>Lead Consultant</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="about-cta-section">
+            <h2>Join Our Community</h2>
+            <p>Experience the best in healthcare with Clinical Buddy Balance.</p>
+            <a href="{{ url_for('register') }}" class="cta-btn">Get Started</a>
+        </div>
+    </div>
+{% endblock %}

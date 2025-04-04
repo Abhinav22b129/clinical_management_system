@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="consultation-container">
+    <h2>Consultation</h2>
+    <form action="/consultation" method="POST">
+        <label for="patient">Select Patient:</label>
+        <select id="patient" name="patient" required>
+            <!-- Populate with patients from the database -->
+            <option value="patient1">Patient 1</option>
+            <option value="patient2">Patient 2</option>
+        </select>
+        
+        <label for="diagnosis">Diagnosis:</label>
+        <textarea id="diagnosis" name="diagnosis" required></textarea>
+        
+        <label for="prescription">Prescription:</label>
+        <textarea id="prescription" name="prescription"></textarea>
+        
+        <button type="submit">Complete Consultation</button>
+    </form>
+</div>
+{% endblock %}

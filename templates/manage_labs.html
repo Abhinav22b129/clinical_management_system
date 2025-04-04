@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="dashboard">
+        <h2>Manage Labs</h2>
+        <ul>
+            {% for lab in labs %}
+                <li>{{ lab.name }} ({{ lab.location }}) - <a href="#">Edit</a> | <a href="#">Delete</a></li>
+            {% endfor %}
+            <li><a href="#">Add New Lab</a></li>
+        </ul>
+        <p>Note: Lab management is a placeholder. Define a Labs model for full functionality.</p>
+    </div>
+{% endblock %}

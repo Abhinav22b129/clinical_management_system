@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}CMS - Prescribe Medicine{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <h2>Prescribe Medicine</h2>
+    <div class="form-container">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.name.label }}<br>
+                {{ form.name(size=32) }}<br>
+                {% for error in form.name.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.dosage.label }}<br>
+                {{ form.dosage(size=32) }}<br>
+                {% for error in form.dosage.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.submit() }}
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .form-container {
+        background-color: #fff;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-group label {
+        font-weight: bold;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .form-group input[type="submit"] {
+        width: auto;
+        background-color: #1abc9c;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        cursor: pointer;
+    }
+
+    .form-group input[type="submit"]:hover {
+        background-color: #16a085;
+    }
+</style>
+{% endblock %}

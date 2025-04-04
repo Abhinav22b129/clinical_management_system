@@ -1,0 +1,193 @@
+<!-- templates/login.html -->
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="login-page">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <img src="{{ url_for('static', filename='images/clinic-logo.png') }}" alt="Clinic Logo" class="login-logo">
+                    <h2 class="login-title">Login to Your Account</h2>
+                    <p class="login-subtitle">Access your health services with ease.</p>
+                </div>
+
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="flash-message {{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <!-- Login Form -->
+                <form method="POST" action="{{ url_for('login') }}" class="login-form" id="login-form">
+                    {{ form.hidden_tag() }}
+                    <div class="input-group">
+                        <label for="username">{{ form.username.label }}</label>
+                        {{ form.username(id="username", placeholder="Enter your username", class="input-field") }}
+                    </div>
+                    <div class="input-group">
+                        <label for="password">{{ form.password.label }}</label>
+                        {{ form.password(id="password", placeholder="Enter your password", class="input-field") }}
+                    </div>
+                    <button type="submit" class="login-btn">Login</button>
+                </form>
+
+                <p class="register-link-text">
+                    Don't have an account? <a href="{{ url_for('register') }}" class="register-link">Register here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Login Page Container */
+        .login-page {
+            min-height: calc(100vh - 200px); /* Adjust based on footer height */
+            background-color: #e8f1f2; /* Soft teal-gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .login-card {
+            background-color: #fff;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-out;
+        }
+
+        .login-header {
+            margin-bottom: 2rem;
+            animation: slideIn 1s ease-out;
+        }
+
+        .login-logo {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 1rem;
+            animation: rotateIn 1s ease-out;
+        }
+
+        .login-title {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .login-subtitle {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+            margin-bottom: 1rem;
+        }
+
+        .flash-message {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: 400;
+        }
+
+        .flash-message.success {
+            background-color: #2ecc71;
+        }
+
+        .flash-message.error {
+            background-color: #e74c3c;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .input-group label {
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .input-field {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: #1abc9c;
+            outline: none;
+            box-shadow: 0 0 5px rgba(26, 188, 156, 0.5);
+        }
+
+        .login-btn {
+            background: linear-gradient(90deg, #1abc9c, #16a085);
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background: linear-gradient(90deg, #16a085, #1abc9c);
+            transform: scale(1.05);
+        }
+
+        .register-link-text {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 1rem;
+        }
+
+        .register-link {
+            color: #ff6f61;
+            text-decoration: none;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .register-link:hover {
+            color: #e74c3c;
+            transform: scale(1.05);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes rotateIn {
+            from { transform: rotate(-20deg) scale(0.8); opacity: 0; }
+            to { transform: rotate(0) scale(1); opacity: 1; }
+        }
+    </style>
+{% endblock %}

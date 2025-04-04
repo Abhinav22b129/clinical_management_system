@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Medicine Delivery{% endblock %}
+
+{% block content %}
+    <div class="dashboard">
+        <h2>Medicine Delivery</h2>
+        <ul>
+            {% for medicine in medicines %}
+                <li>{{ medicine.name }} - ${{ medicine.price }} (Stock: {{ medicine.stock }}) - <a href="#">Order</a></li>
+            {% else %}
+                <li>No medicines available.</li>
+            {% endfor %}
+        </ul>
+        <p><a href="{{ url_for('home') }}">Back to Home</a></p>
+    </div>
+{% endblock %}

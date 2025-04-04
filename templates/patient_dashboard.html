@@ -1,0 +1,617 @@
+{% extends "base.html" %}
+
+{% block title %}CMS - Patient Dashboard{% endblock %}
+
+{% block content %}
+<div class="patient-dashboard-page">
+    <!-- Patient Profile -->
+    <div class="patient-profile">
+        <div class="profile-header">
+            <i class="fas fa-user-circle profile-pic"></i>
+            <h2>Patient Profile</h2>
+        </div>
+        <div class="profile-details">
+            <p><strong>Name:</strong> {{ user.full_name }}</p>
+            # In your patient_dashboard.html template, modify the age calculation:
+            <p><strong>Age:</strong> {{ ((current_date - user.dob.replace(tzinfo=timezone.utc)).days // 365) if user.dob else 'Not specified' }}, <strong>Gender:</strong> {{ user.gender if user.gender else 'Not specified' }}</p>
+            <p><strong>DOB:</strong> {{ user.dob.strftime('%d/%m/%Y') if user.dob else 'Not specified' }}, <strong>Patient ID:</strong> {{ user.id }}</p>
+            <p><strong>Health Conditions:</strong> {{ user.health_conditions if user.health_conditions else 'None' }}</p>
+            <div class="health-metrics">
+                {% if user.health_conditions %}
+                    {% for condition in user.health_conditions.split(',') %}
+                        <button class="metric-btn">{{ condition.strip() }}</button>
+                    {% endfor %}
+                {% else %}
+                    <button class="metric-btn">None</button>
+                {% endif %}
+            </div>
+        </div>
+        <div class="checkup-reminder">
+            <p><strong>Latest Check-Up:</strong> 
+                {% if consultations %}
+                    {{ consultations[0].date_submitted.strftime('%d/%m/%Y') }}
+                    <i class="fas fa-exclamation-circle"></i>
+                {% else %}
+                    No check-ups recorded.
+                {% endif %}
+            </p>
+            <p>It's time for a medical check-up to ensure your well-being. Schedule an appointment with your healthcare provider.</p>
+        </div>
+    </div>
+
+<!-- Appointment Booking Form -->
+<div class="appointment-booking-section">
+    <h2>Book a New Appointment</h2>
+    <div class="form-container">
+        <form method="POST" action="{{ url_for('patient_dashboard') }}" id="appointment-form">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.health_problem.label }}<br>
+                {{ form.health_problem(class="form-control") }}<br>
+                {% for error in form.health_problem.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.symptoms.label }}<br>
+                {{ form.symptoms(class="form-control", rows=5) }}<br>
+                {% for error in form.symptoms.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.date.label }}<br>
+                {{ form.date(class="form-control", **form.date.render_kw) }}<br>
+                {% for error in form.date.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                <label>Doctor</label><br>
+                <input type="text" value="Automatically Selected" disabled class="form-control"><br>
+            </div>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+</div>
+    <!-- Receipt Popup -->
+    <div id="receipt-popup" class="receipt-popup">
+        <div class="receipt-content">
+            <h3>Appointment Receipt</h3>
+            <p id="receipt-message"></p>
+            <button id="close-popup" class="btn btn-primary">Close</button>
+        </div>
+    </div>
+
+    <!-- Upcoming Appointments -->
+    <div class="appointments-section">
+        <h2>Upcoming Appointments</h2>
+        <div class="appointments-list">
+            {% if upcoming_appointments %}
+                {% for item in upcoming_appointments %}
+                    {% set appointment = item.appointment %}
+                    <div class="appointment-card">
+                        <i class="fas fa-stethoscope"></i>
+                        <p>{{ appointment.health_problem }} with Dr. {{ item.doctor_name }}</p>
+                        <p>{{ appointment.date.strftime('%B %d, %Y - %I:%M %p') }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="appointment-card">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>No upcoming appointments.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Next Appointment Calendar -->
+    <div class="calendar-section">
+        <h2>Next Appointment: {{ next_appointment_date.strftime('%B %Y') }}</h2>
+        <div class="calendar">
+            <div class="calendar-header">
+                <button><</button>
+                <p>{{ next_appointment_date.strftime('%B %d') }}</p>
+                <button>></button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th><th>S</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set day = 1 - start_day %}
+                    {% for week in range(6) %}
+                        <tr>
+                            {% for weekday in range(7) %}
+                                {% if day < 1 or day > days_in_month %}
+                                    <td></td>
+                                {% else %}
+                                    <td {% if next_appointment and day == next_appointment.date.day %}class="highlight"{% endif %}>{{ day }}</td>
+                                {% endif %}
+                                {% set day = day + 1 %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Find Specialist -->
+    <div class="specialist-section">
+        <h2>Find Specialist</h2>
+        <div class="specialist-grid">
+            <div class="specialist-card"><i class="fas fa-stethoscope"></i><p>General</p></div>
+            <div class="specialist-card"><i class="fas fa-tooth"></i><p>Dentist</p></div>
+            <div class="specialist-card"><i class="fas fa-hand-holding-heart"></i><p>Dermatologist</p></div>
+            <div class="specialist-card"><i class="fas fa-utensils"></i><p>Dietitian</p></div>
+            <div class="specialist-card"><i class="fas fa-brain"></i><p>Neurologist</p></div>
+            <div class="specialist-card"><i class="fas fa-heartbeat"></i><p>Psychologist</p></div>
+        </div>
+    </div>
+
+    <!-- Prescribed Medications -->
+    <div class="prescriptions-section">
+        <h2>Prescribed Medications</h2>
+        <div class="prescriptions-grid">
+            {% if prescriptions %}
+                {% for prescription in prescriptions %}
+                    <div class="prescription-card">
+                        <i class="fas fa-pills"></i>
+                        <p>{{ prescription.name }}</p>
+                        <p><strong>Dosage:</strong> {{ prescription.dosage }}</p>
+                        <p><strong>Date Issued:</strong> {{ prescription.date_issued.strftime('%b %d, %Y') }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="prescription-card">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>No prescriptions available.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Medical Conditions -->
+    <div class="conditions-section">
+        <h2>Medical Conditions</h2>
+        <div class="conditions-grid">
+            {% if consultations %}
+                {% for consultation in consultations %}
+                    <div class="condition-card">
+                        <i class="fas fa-heartbeat"></i>
+                        <p>{{ consultation.health_problem }}</p>
+                        <p><strong>Symptoms:</strong> {{ consultation.symptoms }}</p>
+                        <p><strong>Diagnosed:</strong> {{ consultation.date_submitted.strftime('%b %d, %Y') }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="condition-card">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>No medical conditions recorded.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Your Appointments -->
+    <div class="appointments-list-section">
+        <h2>Your Appointments</h2>
+        <div class="appointments-grid">
+            {% if appointments_data %}
+                {% for item in appointments_data %}
+                    {% set appointment = item.appointment %}
+                    <div class="appointment-card">
+                        <h3>Appointment #{{ appointment.token_number }}</h3>
+                        <p><strong>Health Problem:</strong> {{ appointment.health_problem }}</p>
+                        <p><strong>Symptoms:</strong> {{ appointment.symptoms }}</p>
+                        <p><strong>Date:</strong> {{ appointment.date.strftime('%b %d, %Y - %I:%M %p') }}</p>
+                        <p><strong>Status:</strong> {{ item.status }}</p>
+                        <p><strong>Doctor:</strong> {{ item.doctor_name }}</p>
+                        <p><strong>Consultation Symptoms:</strong> {{ item.consultation_symptoms }}</p>
+                        <p><strong>Prescriptions:</strong> 
+                            {% if item.prescription %}
+                                {{ item.prescription.name }} (Dosage: {{ item.prescription.dosage }})
+                                <br>
+                                <a href="{{ url_for('medicine_delivery') }}?medicine={{ item.prescription.name }}&quantity=1" class="action-btn">Buy Medicine</a>
+                            {% else %}
+                                No prescriptions available.
+                            {% endif %}
+                        </p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="appointment-card">
+                    <p>No appointments scheduled.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Lab Tests Section -->
+    <div class="lab-tests-section">
+        <h2>Your Lab Tests</h2>
+        <div class="lab-tests-grid">
+            {% if lab_tests %}
+                {% for test in lab_tests %}
+                    <div class="lab-test-card">
+                        <h3>Test: {{ test.test_name }}</h3>
+                        <p><strong>Status:</strong> {{ test.status }}</p>
+                        <p><strong>Order Date:</strong> {{ test.order_date.strftime('%b %d, %Y - %I:%M %p') }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="lab-test-card">
+                    <p>No lab tests ordered.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Healthcare Team -->
+    <div class="healthcare-team">
+        <h2>Your Healthcare Team</h2>
+        <div class="team-grid">
+            {% for member in healthcare_team %}
+                <div class="team-member">
+                    <i class="fas fa-user-md"></i>
+                    <p><strong>{{ member.role }}:</strong> {{ member.name }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Reset Base.html Conflicts */
+    .main-content {
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+    }
+
+    /* Patient Dashboard Page Container */
+    .patient-dashboard-page {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        padding: 2rem;
+        background-color: #000;
+        min-height: calc(100vh - 200px);
+    }
+
+    /* Common Section Styling */
+    .patient-profile, .appointment-booking-section, .appointments-section, .calendar-section, 
+    .specialist-section, .prescriptions-section, .conditions-section, 
+    .appointments-list-section, .lab-tests-section, .healthcare-team {
+        background-color: #1c2526;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        flex: 1;
+        min-width: 300px;
+        color: #fff;
+    }
+
+    /* Patient Profile */
+    .patient-profile {
+        background-color: #2c3e50;
+    }
+
+    .profile-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .profile-pic {
+        font-size: 4rem;
+        color: #1abc9c;
+    }
+
+    .profile-header h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+    }
+
+    .profile-details p {
+        font-size: 1rem;
+        margin: 0.5rem 0;
+    }
+
+    .health-metrics {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .metric-btn {
+        background-color: #34495e;
+        color: #ecf0f1;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .metric-btn:hover {
+        background-color: #1abc9c;
+    }
+
+    .checkup-reminder {
+        background-color: #34495e;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+    }
+
+    .checkup-reminder i {
+        color: #e74c3c;
+    }
+
+    /* Appointment Booking Form */
+    .appointment-booking-section h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+    }
+
+    .form-container {
+        background-color: #f5f6fa;
+        padding: 1.5rem;
+        border-radius: 12px;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        color: #2c3e50;
+    }
+
+    .form-group textarea {
+        height: 100px;
+    }
+
+    .form-group input[type="submit"] {
+        width: auto;
+        background-color: #1abc9c;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        cursor: pointer;
+    }
+
+    .form-group input[type="submit"]:hover {
+        background-color: #16a085;
+    }
+
+    /* Flash Messages */
+    .flash-messages {
+        margin-top: 1rem;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        padding: 1rem;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+
+    .alert-error {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 1rem;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+
+    /* Receipt Popup */
+    .receipt-popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fff;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        color: #2c3e50;
+    }
+
+    .receipt-content h3 {
+        margin-bottom: 1rem;
+    }
+
+    .receipt-content p {
+        font-size: 1rem;
+        margin: 0.5rem 0;
+    }
+
+    #close-popup {
+        margin-top: 1rem;
+        background-color: #1abc9c;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    #close-popup:hover {
+        background-color: #16a085;
+    }
+
+    /* Section Headers */
+    .appointments-section h2, .calendar-section h2, .specialist-section h2, 
+    .prescriptions-section h2, .conditions-section h2, .appointments-list-section h2, 
+    .lab-tests-section h2, .healthcare-team h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Grids */
+    .appointments-list, .specialist-grid, .prescriptions-grid, .conditions-grid, 
+    .appointments-grid, .lab-tests-grid, .team-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+
+    /* Cards */
+    .appointment-card, .specialist-card, .prescription-card, .condition-card, 
+    .lab-test-card, .team-member {
+        background-color: #f5f6fa;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        color: #2c3e50;
+        transition: transform 0.3s ease;
+    }
+
+    .appointment-card:hover, .specialist-card:hover, .prescription-card:hover, 
+    .condition-card:hover, .lab-test-card:hover, .team-member:hover {
+        transform: translateY(-5px);
+    }
+
+    .appointment-card i, .specialist-card i, .prescription-card i, 
+    .condition-card i, .lab-test-card i {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: #1abc9c;
+    }
+
+    .appointment-card p, .specialist-card p, .prescription-card p, 
+    .condition-card p, .lab-test-card p, .team-member p {
+        font-size: 0.9rem;
+        margin: 0.25rem 0;
+    }
+
+    .action-btn {
+        display: inline-block;
+        margin-top: 0.5rem;
+        padding: 0.5rem 1rem;
+        background-color: #3498db;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .action-btn:hover {
+        background-color: #2980b9;
+    }
+
+    /* Calendar */
+    .calendar-section {
+        min-width: 250px;
+    }
+
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .calendar-header button {
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 1.2rem;
+        cursor: pointer;
+    }
+
+    .calendar table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .calendar th, .calendar td {
+        text-align: center;
+        padding: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .calendar th {
+        color: #ecf0f1;
+    }
+
+    .calendar td {
+        background-color: #f5f6fa;
+        color: #2c3e50;
+        border-radius: 5px;
+    }
+
+    .calendar .highlight {
+        background-color: #1abc9c;
+        color: #fff;
+    }
+
+    /* Team Member */
+    .team-member i {
+        font-size: 2rem;
+        color: #1abc9c;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .patient-dashboard-page {
+            padding: 1rem;
+            flex-direction: column;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const popup = document.getElementById('receipt-popup');
+        const receiptMessage = document.getElementById('receipt-message');
+        const closePopup = document.getElementById('close-popup');
+        const flashMessages = document.querySelectorAll('.alert-success');
+
+        flashMessages.forEach(function(message) {
+            if (message.textContent.includes('Appointment booked successfully')) {
+                receiptMessage.textContent = message.textContent;
+                popup.style.display = 'block';
+                message.style.display = 'none'; // Hide original flash message
+            }
+        });
+
+        closePopup.addEventListener('click', function() {
+            popup.style.display = 'none';
+        });
+    });
+</script>
+{% endblock %}
