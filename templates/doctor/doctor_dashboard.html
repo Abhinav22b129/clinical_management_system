@@ -296,6 +296,7 @@
         .patient-info {
             display: flex;
             align-items: center;
+            flex: 1;
         }
 
         .patient-avatar {
@@ -311,13 +312,33 @@
             color: var(--dark);
         }
 
+        .patient-details {
+            flex: 1;
+        }
+
         .patient-details h4 {
             font-size: 1rem;
             margin-bottom: 0.25rem;
+            color: var(--dark);
         }
 
         .patient-details p {
             font-size: 0.85rem;
+            color: var(--gray);
+            margin: 0.25rem 0;
+        }
+
+        .patient-details strong {
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .symptoms {
+            white-space: pre-wrap;
+        }
+
+        .appointment-notes {
+            font-style: italic;
             color: var(--gray);
         }
 
@@ -326,6 +347,7 @@
             align-items: center;
             color: var(--gray);
             font-size: 0.9rem;
+            margin-right: 1rem;
         }
 
         .appointment-time i {
@@ -565,7 +587,11 @@
                                     </div>
                                     <div class="patient-details">
                                         <h4>{{ item.patient_name }}</h4>
-                                        <p>{{ item.appointment.health_problem }}</p>
+                                        <p><strong>Token #{{ item.appointment.token_number }}</strong> • {{ item.appointment.health_problem }}</p>
+                                        <p class="symptoms"><strong>Symptoms:</strong> {{ item.appointment.symptoms }}</p>
+                                        {% if item.appointment.notes %}
+                                        <p class="appointment-notes"><strong>Notes:</strong> {{ item.appointment.notes }}</p>
+                                        {% endif %}
                                     </div>
                                 </div>
                                 <div class="appointment-time">
