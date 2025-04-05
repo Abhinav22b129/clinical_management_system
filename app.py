@@ -12,7 +12,7 @@ import os
 from sqlalchemy import or_
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key-here'
+app.config['SECRET_KEY'] = 'your-secret-key-here'  # Change this to a secure key in production
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(BASE_DIR, 'instance', 'users.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -27,6 +27,7 @@ login_manager.login_view = 'login'
 def load_user(user_id):
     return db.session.get(User, int(user_id))
 
+# Models
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
@@ -45,7 +46,7 @@ class User(db.Model, UserMixin):
     doctor_appointments = db.relationship('Appointment', backref='doctor', lazy=True, foreign_keys='Appointment.doctor_id')
 
     def set_password(self, password):
-        self.password = generate_password_hash(password, method='pbkdf2:sha256', salt_length=16)
+        self.password = generate_password_hash(password, method='pbkdf2:sha256')
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
@@ -61,9 +62,31 @@ class Appointment(db.Model):
     symptoms = db.Column(db.Text, nullable=True)
     date = db.Column(db.DateTime, nullable=False)
     token_number = db.Column(db.Integer, nullable=False)
+
     status = db.Column(db.String(50), default='Scheduled')
     notes = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+
+    status = db.Column(db.String(50), default='Scheduled')  # Scheduled, Consulting, Completed
+    notes = db.Column(db.Text, nullable=True)  # For doctor's notes
+    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+
+# Forms
+class RegisterForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    full_name = StringField('Full Name', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired(), EqualTo('confirm_password', message='Passwords must match')])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired()])
+    dob = DateField('Date of Birth', format='%Y-%m-%d', validators=[DataRequired()], render_kw={"placeholder": "YYYY-MM-DD"})
+    gender = SelectField('Gender', choices=[('', 'Select Gender'), ('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')], validators=[DataRequired()])
+    health_conditions = TextAreaField('Health Conditions', validators=[DataRequired()], render_kw={"placeholder": "e.g., Diabetes, Hypertension"})
+    submit = SubmitField('Register')
+
+class LoginForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Login')
 
 HEALTH_PROBLEMS = [
     ('General Physician', 'General Physician'),
@@ -95,7 +118,7 @@ HEALTH_PROBLEMS = [
     ('Dentistry', 'Dentistry'),
     ('Endocrinology', 'Endocrinology'),
     ('Urology', 'Urology'),
-    ("I don't know", "I don't know")
+    ("I don't know", "I don't know")  # Fixed line - changed single quotes to double quotes
 ]
 
 HEALTH_PROBLEM_TO_SPECIALTY = {
@@ -128,8 +151,9 @@ HEALTH_PROBLEM_TO_SPECIALTY = {
     'Dentistry': 'Dentist',
     'Endocrinology': 'Endocrinologist',
     'Urology': 'Urologist',
-    "I don't know": 'General'
+    "I don't know": 'General'  # Fixed line - changed single quotes to double quotes
 }
+
 
 class RegisterForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -156,6 +180,8 @@ class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Login')
+
+
 
 class AppointmentForm(FlaskForm):
     health_problem = SelectField('Select Your Health Problem', choices=HEALTH_PROBLEMS, validators=[DataRequired()])
@@ -218,6 +244,18 @@ def register():
         return redirect(url_for('home'))
     form = RegisterForm()
     if form.validate_on_submit():
+
+
+        # Check for existing username or email
+        if User.query.filter_by(username=form.username.data).first():
+            flash('Username already exists.', 'error')
+            return render_template('register.html', form=form)
+        if User.query.filter_by(email=form.email.data).first():
+            flash('Email already exists.', 'error')
+            return render_template('register.html', form=form)
+
+        # Create new user
+
         user = User(
             username=form.username.data,
             email=form.email.data,
@@ -239,13 +277,15 @@ def register():
         except Exception as e:
             db.session.rollback()
             flash(f'Error creating account: {str(e)}', 'error')
+
+            print(f"Database error: {e}")  # Debugging
+
     return render_template('register.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))
-    
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
@@ -257,6 +297,17 @@ def login():
         flash('Login successful!', 'success')
         return redirect(url_for('dashboard'))
     
+
+        if user and user.check_password(form.password.data):
+            login_user(user)
+            if user.is_admin:
+                return redirect(url_for('admin_dashboard'))
+            elif user.is_doctor:
+                return redirect(url_for('doctor_dashboard'))
+            else:
+                return redirect(url_for('patient_dashboard'))
+        flash('Invalid username or password.', 'error')
+
     return render_template('login.html', form=form)
 
 @app.route('/logout')
@@ -358,6 +409,7 @@ def patient_dashboard():
         
         return redirect(url_for('patient_dashboard'))
 
+    # Fetch appointments for display
     appointments = Appointment.query.filter(
         Appointment.user_id == current_user.id,
         Appointment.date >= current_datetime
@@ -385,7 +437,6 @@ def patient_dashboard():
         age=age,
         today=today
     )
-
 @app.route('/doctor_dashboard')
 @login_required
 def doctor_dashboard():
@@ -397,6 +448,7 @@ def doctor_dashboard():
     day_start = datetime.combine(today, time(0, 0))
     day_end = datetime.combine(today, time(23, 59, 59))
     
+    # Today's appointments
     today_appointments = Appointment.query.filter(
         Appointment.doctor_id == current_user.id,
         Appointment.date >= day_start,
@@ -414,6 +466,12 @@ def doctor_dashboard():
             'symptoms': appointment.symptoms,
             'token_number': appointment.token_number
         })
+
+    # Upcoming appointments
+    upcoming_appointments = Appointment.query.filter(
+        Appointment.doctor_id == current_user.id,
+        Appointment.date > day_end
+    ).order_by(Appointment.date.asc()).all()
     
     return render_template(
         'doctor/doctor_dashboard.html',
@@ -421,12 +479,11 @@ def doctor_dashboard():
         doctor_initials=''.join([name[0] for name in current_user.full_name.split()[:2]]).upper(),
         todays_appointments=len(todays_appointments_data),
         todays_appointments_data=todays_appointments_data,
+        upcoming_appointments=upcoming_appointments,
         total_patients=len({a.user_id for a in Appointment.query.filter_by(doctor_id=current_user.id).all()}),
         monthly_revenue=0,
-        average_rating=5.0,
-        recent_patients=[]
+        average_rating=5.0
     )
-
 @app.route('/appointment/<int:appointment_id>/start', methods=['POST'])
 @login_required
 def start_appointment(appointment_id):
@@ -454,6 +511,7 @@ def complete_appointment(appointment_id):
     appointment.status = 'Completed'
     db.session.commit()
     return jsonify({'status': 'success', 'message': 'Appointment completed'})
+
 
 @app.route('/appointment/<int:appointment_id>/confirm', methods=['POST'])
 @login_required
@@ -486,6 +544,38 @@ def mark_no_show(appointment_id):
     appointment.notes = appointment.notes + f"\n[Marked as No-Show by Dr. {current_user.full_name} on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]" if appointment.notes else f"[Marked as No-Show by Dr. {current_user.full_name} on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]"
     db.session.commit()
     return jsonify({'status': 'success', 'message': 'Appointment marked as no-show'})
+
+@app.route('/appointment/<int:appointment_id>/notes', methods=['GET', 'POST'])
+@login_required
+def appointment_notes(appointment_id):
+    if not current_user.is_doctor:
+        flash('Access denied. Doctors only.', 'error')
+        return redirect(url_for('home'))
+    
+    appointment = Appointment.query.get_or_404(appointment_id)
+    if appointment.doctor_id != current_user.id:
+        flash('Access denied.', 'error')
+        return redirect(url_for('doctor_dashboard'))
+    
+    form = AppointmentNotesForm()
+    if form.validate_on_submit():
+        appointment.notes = form.notes.data
+        db.session.commit()
+        flash('Notes saved successfully!', 'success')
+        return redirect(url_for('doctor_dashboard'))
+    
+    form.notes.data = appointment.notes  # Pre-fill existing notes
+    
+    # Get patient information
+    patient = db.session.get(User, appointment.user_id)
+    
+    return render_template(
+        'doctor/appointment_notes.html',
+        form=form,
+        appointment=appointment,
+        patient=patient
+    )
+
 
 @app.route('/admin_dashboard')
 @login_required
@@ -528,7 +618,6 @@ def admin_dashboard():
         total_doctors=total_doctors,
         total_appointments=total_appointments
     )
-
 @app.route('/add_doctor', methods=['GET', 'POST'])
 @login_required
 def add_doctor():
@@ -564,6 +653,8 @@ def init_db():
     with app.app_context():
         db.drop_all()
         db.create_all()
+        
+        # Admin user
         admin = User(
             username='admin',
             email='admin@example.com',
@@ -574,7 +665,8 @@ def init_db():
         )
         admin.set_password('admin123')
         
-        doctor = User(
+        # Doctor users
+        doctor1 = User(
             username='doctor1',
             email='doctor1@example.com',
             full_name='Dr. John Doe',
@@ -583,8 +675,20 @@ def init_db():
             is_admin=False,
             specialty='General'
         )
-        doctor.set_password('doctor123')
+        doctor1.set_password('doctor123')
         
+        doctor2 = User(
+            username='doctor2',
+            email='doctor2@example.com',
+            full_name='Dr. Jane Smith',
+            is_doctor=True,
+            is_patient=False,
+            is_admin=False,
+            specialty='Dermatologist'
+        )
+        doctor2.set_password('doctor123')
+        
+        # Patient user
         patient = User(
             username='patient1',
             email='patient1@example.com',
@@ -598,11 +702,11 @@ def init_db():
         )
         patient.set_password('patient123')
         
-        db.session.add_all([admin, doctor, patient])
+        db.session.add_all([admin, doctor1, doctor2, patient])
         db.session.commit()
-        print("Database initialized with test users: admin, doctor1, patient1")
+        print("Database initialized with test users: admin, doctor1, doctor2, patient1")
 
 if __name__ == '__main__':
-    # Uncomment the next line for the first run to initialize the database, then comment it out
-    # init_db()
+    # Uncomment the next line for the first run to initialize the database
+    init_db()
     app.run(debug=True)

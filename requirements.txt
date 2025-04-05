@@ -1,6 +1,18 @@
+<<<<<<< HEAD
 flask
 flask-login
 flask-sqlalchemy
 flask-wtf
 flask-migrate
 python-dateutil
+=======
+Flask==2.3.3
+flask-bcrypt==1.0.1
+Flask
+Flask-SQLAlchemy
+Flask-Bcrypt
+Flask==2.0.1
+Flask-SQLAlchemy==2.5.1
+Flask-Login==0.5.0
+Werkzeug==2.0.1
+>>>>>>> parent of 8c00406 (bulit a new dashboard for doctor and patient)
