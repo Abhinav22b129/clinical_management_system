@@ -12,7 +12,7 @@ import os
 from sqlalchemy import or_
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key-here'  # Replace with a secure key in a real app
+app.config['SECRET_KEY'] = 'your-secret-key-here'
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(BASE_DIR, 'instance', 'users.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -222,7 +222,7 @@ def register():
             username=form.username.data,
             email=form.email.data,
             full_name=form.full_name.data,
-            dob=datetime.combine(form.dob.data, time(0, 0),  # Removed tzinfo for simplicity
+            dob=datetime.combine(form.dob.data, time(0, 0)),
             gender=form.gender.data,
             health_conditions=form.health_conditions.data,
             is_admin=False,
@@ -286,7 +286,7 @@ def patient_dashboard():
     today = date.today()
     tomorrow = today + timedelta(days=1)
     one_month_later = today + relativedelta(months=1)
-    current_datetime = datetime.now()  # Removed timezone for simplicity
+    current_datetime = datetime.now()
 
     form = AppointmentForm(min_date=tomorrow, max_date=one_month_later)
     form.date.render_kw = {
@@ -354,6 +354,7 @@ def patient_dashboard():
         except Exception as e:
             db.session.rollback()
             flash(f'Error booking appointment: {str(e)}', 'error')
+            print(f"Database error: {e}")
         
         return redirect(url_for('patient_dashboard'))
 

@@ -58,9 +58,6 @@
             <li><a href="{{ url_for('home') }}">Home</a></li>
             {% if current_user.is_authenticated %}
                 <li><a href="{{ url_for('dashboard') }}">Consult Now</a></li>
-                <li><a href="{{ url_for('medicine_delivery') }}">Medicine</a></li>
-                <li><a href="{{ url_for('manage_labs') }}">Lab Test & Packages</a></li>
-                <li><a href="{{ url_for('about_us') }}">About Us</a></li>
                 {% if current_user.is_admin %}
                     <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
                 {% elif current_user.is_doctor %}
@@ -71,9 +68,6 @@
                 <li><a href="{{ url_for('logout') }}">Logout</a></li>
             {% else %}
                 <li><a href="{{ url_for('login') }}">Consult Now</a></li>
-                <li><a href="{{ url_for('medicine_delivery') }}">Medicine</a></li>
-                <li><a href="{{ url_for('manage_labs') }}">Lab Test & Packages</a></li>
-                <li><a href="{{ url_for('about_us') }}">About Us</a></li>
                 <li><a href="{{ url_for('login') }}">Login</a></li>
                 <li><a href="{{ url_for('register') }}">Register</a></li>
             {% endif %}
@@ -100,15 +94,11 @@
             <div class="footer-column">
                 <h4>Health</h4>
                 <ul>
-                    <li><a href="{{ url_for('medicine_delivery') }}">Book Medicines</a></li>
                     {% if current_user.is_authenticated %}
                         <li><a href="{{ url_for('dashboard') }}">Consult Now</a></li>
                     {% else %}
                         <li><a href="{{ url_for('login') }}">Consult Now</a></li>
                     {% endif %}
-                    <li><a href="{{ url_for('manage_labs') }}">Book a Lab Test</a></li>
-                    <li><a href="{{ url_for('covid_services') }}">Covid Essential Items</a></li>
-                    <li><a href="{{ url_for('dental_care') }}">Dental</a></li>
                     <li><a href="#">Cancer Care</a></li>
                 </ul>
             </div>
@@ -127,18 +117,14 @@
                     <li><a href="#">Privacy Policy</a></li>
                     <li><a href="#">Grievance Redressal</a></li>
                     <li><a href="#">Cancellation & Refund Policy</a></li>
-                    <li><a href="#">Security at Clinical Buddy Balance</a></li>
                 </ul>
             </div>
             <div class="footer-column">
                 <h4>About</h4>
                 <ul>
                     <li><a href="#">Overview</a></li>
-                    <li><a href="#">Testimonials</a></li>
                     <li><a href="#">Contact</a></li>
-                    <li><a href="#">Blog</a></li>
                     <li><a href="#">Careers</a></li>
-                    <li><a href="#">Security</a></li>
                 </ul>
             </div>
             <div class="footer-column">

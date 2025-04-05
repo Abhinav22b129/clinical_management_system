@@ -10,6 +10,7 @@
             <h1 class="greeting">Welcome back, <span class="patient-name">{{ user.full_name.split()[0] }}</span></h1>
             <p class="last-login">Last login: {{ current_date.strftime('%b %d, %Y at %I:%M %p') }}</p>
         </div>
+<<<<<<< HEAD
         <div class="header-right">
             <div class="health-status pulse">
                 <div class="status-indicator excellent"></div>
@@ -105,6 +106,14 @@
                 <h3 class="card-title"><i class="fas fa-chart-line"></i> Health Summary</h3>
                 <a href="#" class="view-all hover-grow">View Full Report <i class="fas fa-arrow-right"></i></a>
             </div>
+=======
+        <div class="profile-details">
+            <p><strong>Name:</strong> {{ user.full_name }}</p>
+            # In your patient_dashboard.html template, modify the age calculation:
+            <p><strong>Age:</strong> {{ ((current_date - user.dob.replace(tzinfo=timezone.utc)).days // 365) if user.dob else 'Not specified' }}, <strong>Gender:</strong> {{ user.gender if user.gender else 'Not specified' }}</p>
+            <p><strong>DOB:</strong> {{ user.dob.strftime('%d/%m/%Y') if user.dob else 'Not specified' }}, <strong>Patient ID:</strong> {{ user.id }}</p>
+            <p><strong>Health Conditions:</strong> {{ user.health_conditions if user.health_conditions else 'None' }}</p>
+>>>>>>> parent of 92a4639 (updated backend also patientb dashboard)
             <div class="health-metrics">
                 {% if user.health_conditions %}
                     {% for condition in user.health_conditions.split(',') %}
