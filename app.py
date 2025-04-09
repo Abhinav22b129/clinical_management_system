@@ -10,8 +10,9 @@ from flask_migrate import Migrate
 from dateutil.relativedelta import relativedelta
 import os
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key-here'  # Change this to a secure key in production
+app = Flask(__name__, static_folder='static', static_url_path='/static')  # CHANGED
+app.config['SECRET_KEY'] = 'your-secret-key-here'
+app.config['TEMPLATES_AUTO_RELOAD'] = True  # CHANGED - helps during development
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(BASE_DIR, 'users.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -171,9 +172,9 @@ class AppointmentNotesForm(FlaskForm):
     notes = TextAreaField('Doctor Notes', validators=[DataRequired()])
     submit = SubmitField('Save Notes')
 
-# Routes
 @app.route('/')
 def home():
+    print("Rendering home.html")  # Check terminal for this message
     return render_template('home.html')
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -413,6 +414,7 @@ def doctor_dashboard():
         upcoming_appointments=upcoming_appointments_data
     )
 
+
 @app.route('/appointment/<int:appointment_id>/start', methods=['POST'])
 @login_required
 def start_appointment(appointment_id):
@@ -443,6 +445,37 @@ def complete_appointment(appointment_id):
     
     return jsonify({'status': 'success', 'message': 'Appointment completed'})
 
+# Add these above your existing routes
+
+@app.route('/appointment/<int:appointment_id>/confirm', methods=['POST'])
+@login_required
+def confirm_appointment(appointment_id):
+    if not current_user.is_doctor:
+        return jsonify({'status': 'error', 'message': 'Access denied'}), 403
+    
+    appointment = Appointment.query.get_or_404(appointment_id)
+    if appointment.doctor_id != current_user.id:
+        return jsonify({'status': 'error', 'message': 'Access denied'}), 403
+    
+    appointment.status = 'Confirmed'
+    db.session.commit()
+    
+    return jsonify({'status': 'success', 'message': 'Appointment confirmed'})
+
+@app.route('/appointment/<int:appointment_id>/reject', methods=['POST'])
+@login_required
+def reject_appointment(appointment_id):
+    if not current_user.is_doctor:
+        return jsonify({'status': 'error', 'message': 'Access denied'}), 403
+    
+    appointment = Appointment.query.get_or_404(appointment_id)
+    if appointment.doctor_id != current_user.id:
+        return jsonify({'status': 'error', 'message': 'Access denied'}), 403
+    
+    appointment.status = 'Rejected'
+    db.session.commit()
+    
+    return jsonify({'status': 'success', 'message': 'Appointment rejected'})
 @app.route('/appointment/<int:appointment_id>/notes', methods=['GET', 'POST'])
 @login_required
 def appointment_notes(appointment_id):
@@ -609,7 +642,6 @@ def init_db():
         db.session.add_all([admin, doctor1, doctor2, doctor3, patient])
         db.session.commit()
         print("Database initialized with test users: admin, doctor1-3, patient1")
-
 if __name__ == '__main__':
     init_db()  # Initialize database on startup
     app.run(debug=True)
