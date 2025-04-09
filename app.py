@@ -579,6 +579,9 @@ def admin_dashboard():
             'status': appointment.status
         })
     
+    # Query for available doctors and pass to template
+    available_doctors = User.query.filter_by(is_doctor=True, availability_status='Available').all()
+    
     return render_template(
         'admin/dashboard.html',
         today_appointments=today_appointments_data,
@@ -587,8 +590,29 @@ def admin_dashboard():
         total_appointments=total_appointments,
         scheduled_appointments=scheduled_appointments,
         consulting_appointments=consulting_appointments,
-        completed_appointments=completed_appointments
-    )
+        completed_appointments=completed_appointments,
+        available_doctors=available_doctors  # Pass the queried doctors to template
+    ) 
+@app.route('/patient_records')
+@login_required
+def patient_records():
+    if not current_user.is_admin:
+        flash('Access denied. Admins only.', 'error')
+        return redirect(url_for('home'))
+    
+    patients = User.query.filter_by(is_patient=True).all()
+    patients_data = []
+    for patient in patients:
+        last_appointment = Appointment.query.filter_by(user_id=patient.id).order_by(Appointment.date.desc()).first()
+        patients_data.append({
+            'id': patient.id,
+            'name': patient.full_name,
+            'age': relativedelta(datetime.now(timezone.utc), patient.dob).years if patient.dob else 'Unknown',
+            'gender': patient.gender or 'Unknown',
+            'health_conditions': patient.health_conditions or 'None',
+            'last_visit': last_appointment.date.strftime('%Y-%m-%d') if last_appointment else 'N/A'
+        })
+    return render_template('admin/patient_records.html', patients=patients_data)
 
 @app.route('/medicine_delivery', methods=['GET', 'POST'])
 @login_required

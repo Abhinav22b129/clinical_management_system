@@ -16,10 +16,10 @@
             <a href="{{ url_for('admin_dashboard') }}" class="nav-item active"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>
             <a href="{{ url_for('admin_dashboard') }}" class="nav-item"><i class="fas fa-user-md"></i> <span>Doctors</span></a>
             <a href="{{ url_for('patient_records') }}" class="nav-item"><i class="fas fa-users"></i> <span>Patients</span></a>
-            <a href="{{ url_for('add_medicine') }}" class="nav-item"><i class="fas fa-pills"></i> <span>Medicine</span></a>
-            <a href="{{ url_for('admin_billing') }}" class="nav-item"><i class="fas fa-file-invoice-dollar"></i> <span>Billing</span></a>
-            <a href="{{ url_for('admin_reports') }}" class="nav-item"><i class="fas fa-file-alt"></i> <span>Reports</span></a>
-            <a href="{{ url_for('admin_settings') }}" class="nav-item"><i class="fas fa-cog"></i> <span>Settings</span></a>
+            <a href="#" class="nav-item" onclick="alert('Feature not implemented yet')"><i class="fas fa-pills"></i> <span>Medicine</span></a>
+            <a href="#" class="nav-item" onclick="alert('Feature not implemented yet')"><i class="fas fa-file-invoice-dollar"></i> <span>Billing</span></a>
+            <a href="#" class="nav-item" onclick="alert('Feature not implemented yet')"><i class="fas fa-file-alt"></i> <span>Reports</span></a>
+            <a href="#" class="nav-item" onclick="alert('Feature not implemented yet')"><i class="fas fa-cog"></i> <span>Settings</span></a>
             <a href="{{ url_for('logout') }}" class="nav-item"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
         </nav>
     </aside>
@@ -48,17 +48,17 @@
             </div>
             <div class="stat-card">
                 <h3>Today's Appointments</h3>
-                <p class="stat-value">{{ todays_appointments }}</p>
+                <p class="stat-value">{{ today_appointments|length }}</p>
                 <p class="stat-change positive">+5% from yesterday</p>
             </div>
             <div class="stat-card">
-                <h3>Available Doctors</h3>
-                <p class="stat-value">{{ available_doctors }}</p>
+                <h3>Total Doctors</h3>
+                <p class="stat-value">{{ total_doctors }}</p>
                 <p class="stat-change negative">2 on leave</p>
             </div>
             <div class="stat-card">
-                <h3>Total Revenue</h3>
-                <p class="stat-value">${{ total_revenue }}</p>
+                <h3>Total Appointments</h3>
+                <p class="stat-value">{{ total_appointments }}</p>
                 <p class="stat-change positive">+8.4% from last month</p>
             </div>
         </div>
@@ -69,8 +69,8 @@
             <div class="admin-section recent-appointments">
                 <h2>Recent Appointments</h2>
                 <div class="appointments-list">
-                    {% if recent_appointments %}
-                        {% for appt in recent_appointments %}
+                    {% if today_appointments %}
+                        {% for appt in today_appointments %}
                             <div class="appointment-card">
                                 <img src="https://via.placeholder.com/40" alt="Patient Picture">
                                 <div class="appointment-info">
@@ -95,15 +95,16 @@
             <div class="admin-section available-doctors">
                 <h2>Available Doctors</h2>
                 <div class="doctors-list">
+                    {% set available_doctors_list = User.query.filter_by(is_doctor=True, availability_status='Available').all() %}
                     {% if available_doctors_list %}
                         {% for doctor in available_doctors_list %}
                             <div class="doctor-card">
                                 <img src="https://via.placeholder.com/40" alt="Doctor Picture">
                                 <div class="doctor-info">
-                                    <p><strong>{{ doctor.name }}</strong></p>
+                                    <p><strong>{{ doctor.full_name }}</strong></p>
                                     <p>{{ doctor.specialty }}</p>
                                 </div>
-                                <span class="status {{ doctor.status.lower() }}">{{ doctor.status }}</span>
+                                <span class="status {{ doctor.availability_status.lower() }}">{{ doctor.availability_status }}</span>
                             </div>
                         {% endfor %}
                     {% else %}
@@ -425,8 +426,16 @@
         background: #28a745;
     }
 
-    .status.pending {
+    .status.scheduled {
         background: #dc3545;
+    }
+
+    .status.consulting {
+        background: #17a2b8;
+    }
+
+    .status.completed {
+        background: #6c757d;
     }
 
     /* Available Doctors */
