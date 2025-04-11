@@ -2,324 +2,1084 @@
 
 {% block content %}
 <div class="home-page">
-    <!-- Hero Section -->
+    <!-- Hero Section with Medical Animation -->
     <section class="hero-section">
         <div class="hero-content">
-            <h1>Welcome to CMS</h1>
-            <p>Your trusted partner for seamless healthcare services. Book consultations, order medicines, and manage your health—all in one place.</p>
-            {% if not session.get('user_id') or session.get('user_role') != 'admin' %}
-                <a href="{{ url_for('dashboard') }}" class="hero-btn">Get Started Now</a>
-            {% else %}
-                <a href="{{ url_for('login') }}" class="hero-btn">Get Started Now</a>
-            {% endif %}
+            <h1 class="gradient-text">sree nandhu <span class="cms-highlight">Clinical Management</span> System</h1>
+            <p class="hero-subtitle">Streamlining healthcare operations with cutting-edge technology for hospitals, clinics, and medical professionals.</p>
+            <div class="hero-buttons">
+                {% if not session.get('user_id') or session.get('user_role') != 'admin' %}
+                    <a href="{{ url_for('dashboard') }}" class="hero-btn pulse-animation">
+                        <span>Explore Dashboard</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="hero-btn pulse-animation">
+                        <span>Login Now</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                {% endif %}
+                <a href="#features" class="hero-btn secondary-btn">
+                    <span>Learn More</span>
+                    <i class="fas fa-chevron-down"></i>
+                </a>
+            </div>
+        </div>
+        <div class="hero-animation">
+            <div class="animation-container">
+                <div class="hospital-building"></div>
+                <div class="medical-icons">
+                    <i class="fas fa-heartbeat"></i>
+                    <i class="fas fa-procedures"></i>
+                    <i class="fas fa-user-md"></i>
+                    <i class="fas fa-pills"></i>
+                    <i class="fas fa-ambulance"></i>
+                </div>
+                <div class="data-flow"></div>
+            </div>
         </div>
     </section>
 
-     <!-- Features Section -->
-     <section class="features-section">
-        <div class="dashboard-header">
-            <h2>Explore Our Services</h2>
+    <!-- Features Section with Animated Cards -->
+    <section id="features" class="features-section">
+        <div class="section-header">
+            <h2 class="section-title">Comprehensive <span class="highlight">Hospital Solutions</span></h2>
+            <p class="section-subtitle">Integrated modules designed to optimize every aspect of healthcare delivery</p>
         </div>
         <div class="features-grid">
             <div class="feature-card">
-                <i class="fas fa-stethoscope"></i>
-                <h3>Consult Now</h3>
-                <p>Schedule a consultation with top doctors in just a few clicks.</p>
-                {% if session.get('user_id') %}
-                    <a href="{{ url_for('dashboard') }}" class="feature-btn">Book Now</a>
-                {% else %}
-                    <a href="{{ url_for('login') }}" class="feature-btn">Book Now</a>
-                {% endif %}
+                <div class="feature-icon">
+                    <div class="icon-animation">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                </div>
+                <h3>Appointment Management</h3>
+                <p>Efficient scheduling system for doctors and patients with automated reminders.</p>
+                <div class="feature-underline"></div>
             </div>
             <div class="feature-card">
-                <i class="fas fa-prescription-bottle"></i>
-                <h3>Order Medicines</h3>
-                <p>Get your prescriptions delivered to your doorstep.</p>
+                <div class="feature-icon">
+                    <div class="icon-animation">
+                        <i class="fas fa-file-medical"></i>
+                    </div>
+                </div>
+                <h3>Electronic Health Records</h3>
+                <p>Secure, centralized patient records accessible to authorized personnel.</p>
+                <div class="feature-underline"></div>
             </div>
             <div class="feature-card">
-                <i class="fas fa-vial"></i>
-                <h3>Lab Tests</h3>
-                <p>Book lab tests and view results online with ease.</p>
+                <div class="feature-icon">
+                    <div class="icon-animation">
+                        <i class="fas fa-prescription-bottle-alt"></i>
+                    </div>
+                </div>
+                <h3>Pharmacy Integration</h3>
+                <p>Seamless medication management and prescription tracking.</p>
+                <div class="feature-underline"></div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <div class="icon-animation">
+                        <i class="fas fa-vial"></i>
+                    </div>
+                </div>
+                <h3>Lab Test Management</h3>
+                <p>Digital test orders, results tracking, and integration with diagnostic equipment.</p>
+                <div class="feature-underline"></div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <div class="icon-animation">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                </div>
+                <h3>Billing & Insurance</h3>
+                <p>Automated billing, insurance claims processing, and financial reporting.</p>
+                <div class="feature-underline"></div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <div class="icon-animation">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+                <h3>Analytics Dashboard</h3>
+                <p>Real-time insights into hospital operations and patient statistics.</p>
+                <div class="feature-underline"></div>
             </div>
         </div>
     </section>
 
-    <!-- Medical Categories Section -->
-    <section class="categories-section">
-        <div class="dashboard-header">
-            <h2>Medical Categories</h2>
+    <!-- Workflow Section with Animated Timeline -->
+    <section class="workflow-section">
+        <div class="section-header">
+            <h2 class="section-title">Optimized <span class="highlight">Clinical Workflow</span></h2>
+            <p class="section-subtitle">Our system enhances every step of the patient journey</p>
         </div>
-        <div class="dashboard-grid">
-            <div class="dashboard-card">
-                <i class="fas fa-calendar-check"></i>
-                <h3>Upcoming Appointments</h3>
-                <p>Schedule and view your appointments.</p>
+        <div class="workflow-timeline">
+            <div class="timeline-item">
+                <div class="timeline-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <div class="timeline-content">
+                    <h3>Patient Registration</h3>
+                    <p>Quick digital onboarding with minimal paperwork</p>
+                </div>
             </div>
-            <div class="dashboard-card">
-                <i class="fas fa-notes-medical"></i>
-                <h3>Medical Records</h3>
-                <p>Access your health history anytime.</p>
+            <div class="timeline-item">
+                <div class="timeline-icon">
+                    <i class="fas fa-stethoscope"></i>
+                </div>
+                <div class="timeline-content">
+                    <h3>Clinical Assessment</h3>
+                    <p>Structured documentation of patient encounters</p>
+                </div>
             </div>
-            <div class="dashboard-card">
-                <i class="fas fa-user-md"></i>
-                <h3>Patient Details</h3>
-                <p>Manage your personal information.</p>
+            <div class="timeline-item">
+                <div class="timeline-icon">
+                    <i class="fas fa-prescription"></i>
+                </div>
+                <div class="timeline-content">
+                    <h3>Treatment Plan</h3>
+                    <p>Customizable care pathways with decision support</p>
+                </div>
             </div>
-            <div class="dashboard-card">
-                <i class="fas fa-heartbeat"></i>
-                <h3>Health Updates</h3>
-                <p>Stay informed about your health.</p>
+            <div class="timeline-item">
+                <div class="timeline-icon">
+                    <i class="fas fa-procedures"></i>
+                </div>
+                <div class="timeline-content">
+                    <h3>Care Delivery</h3>
+                    <p>Coordinated multidisciplinary team approach</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-icon">
+                    <i class="fas fa-file-medical-alt"></i>
+                </div>
+                <div class="timeline-content">
+                    <h3>Discharge & Follow-up</h3>
+                    <p>Automated discharge summaries and follow-up scheduling</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- CTA Banner for Consultation -->
-    <section class="cta-banner">
+    <!-- Stats Section with Counting Animation -->
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-hospital"></i>
+                </div>
+                <div class="stat-number" data-count="250">0</div>
+                <div class="stat-label">Healthcare Facilities</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <div class="stat-number" data-count="5000">0</div>
+                <div class="stat-label">Medical Professionals</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-procedures"></i>
+                </div>
+                <div class="stat-number" data-count="1200000">0</div>
+                <div class="stat-label">Patients Served</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-number" data-count="35">0</div>
+                <div class="stat-label">Minutes Saved Daily</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section with Floating Elements -->
+    <section class="cta-section">
         <div class="cta-content">
-            <h2>Ready for Your Next Consultation?</h2>
-            <p>Consultation Duration from $50 / session</p>
-            {% if session.get('user_id') %}
-                <a href="{{ url_for('dashboard') }}" class="cta-btn">Book Now</a>
-            {% else %}
-                <a href="{{ url_for('login') }}" class="cta-btn">Book Now</a>
-            {% endif %}
+            <h2>Ready to Transform Your Healthcare Facility?</h2>
+            <p>Schedule a demo to see our clinical management system in action</p>
+            <div class="cta-buttons">
+                <a href="#" class="cta-btn primary-btn">
+                    <span>Request Demo</span>
+                    <i class="fas fa-video"></i>
+                </a>
+                <a href="#" class="cta-btn secondary-btn">
+                    <span>Contact Sales</span>
+                    <i class="fas fa-phone-alt"></i>
+                </a>
+            </div>
+        </div>
+        <div class="cta-floating-elements">
+            <div class="floating-element element-1">
+                <i class="fas fa-heart"></i>
+            </div>
+            <div class="floating-element element-2">
+                <i class="fas fa-pills"></i>
+            </div>
+            <div class="floating-element element-3">
+                <i class="fas fa-notes-medical"></i>
+            </div>
+            <div class="floating-element element-4">
+                <i class="fas fa-ambulance"></i>
+            </div>
         </div>
     </section>
 </div>
 
+<style>
+    :root {
+        --primary: #2a7fba;
+        --primary-light: #4d9fd3;
+        --secondary: #1a5f8b;
+        --accent: #3fb1e3;
+        --dark: #2c3e50;
+        --light: #ffffff;
+        --light-gray: #f8f9fa;
+        --medium-gray: #e9ecef;
+        --text-gray: #6c757d;
+        --success: #28a745;
+        --warning: #ffc107;
+        --danger: #dc3545;
+        --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        --transition: all 0.3s ease;
+    }
 
-    <style>
-        .home-page {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        
-        .hero-section {
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
-                        url('/static/images/hero-bg.jpg') no-repeat center center/cover;
-            height: 500px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: #fff;
-            border-radius: 12px;
-            margin-bottom: 3rem;
-        }
+    .home-page {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        overflow: hidden;
+        position: relative;
+        background-color: var(--light);
+    }
 
+    /* Hero Section */
+    .hero-section {
+        display: flex;
+        align-items: center;
+        min-height: 80vh;
+        padding: 4rem 0;
+        position: relative;
+    }
+
+    .hero-content {
+        flex: 1;
+        padding-right: 3rem;
+        z-index: 2;
+    }
+
+    .hero-content h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        line-height: 1.2;
+        color: var(--dark);
+    }
+
+    .gradient-text {
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .cms-highlight {
+        position: relative;
+        display: inline-block;
+    }
+
+    .cms-highlight::after {
+        content: '';
+        position: absolute;
+        bottom: 5px;
+        left: 0;
+        width: 100%;
+        height: 8px;
+        background-color: rgba(42, 127, 186, 0.2);
+        z-index: -1;
+        border-radius: 4px;
+    }
+
+    .hero-subtitle {
+        font-size: 1.3rem;
+        color: var(--text-gray);
+        margin-bottom: 2.5rem;
+        max-width: 600px;
+        line-height: 1.6;
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .hero-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: var(--transition);
+        box-shadow: var(--shadow);
+        border: none;
+        cursor: pointer;
+    }
+
+    .hero-btn.secondary-btn {
+        background: white;
+        color: var(--primary);
+        border: 2px solid var(--primary);
+    }
+
+    .hero-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(42, 127, 186, 0.3);
+    }
+
+    .hero-btn.secondary-btn:hover {
+        background: var(--primary-light);
+        color: white;
+        border-color: var(--primary-light);
+    }
+
+    .hero-btn i {
+        transition: transform 0.3s ease;
+    }
+
+    .hero-btn:hover i {
+        transform: translateX(5px);
+    }
+
+    .pulse-animation {
+        animation: pulse 2s infinite;
+    }
+
+    /* Hero Animation */
+    .hero-animation {
+        flex: 1;
+        position: relative;
+        height: 500px;
+        min-width: 50%;
+    }
+
+    .animation-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+
+    .hospital-building {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 300px;
+        height: 200px;
+        background: linear-gradient(135deg, var(--primary-light), var(--primary));
+        border-radius: 10px 10px 0 0;
+        box-shadow: 0 10px 30px rgba(42, 127, 186, 0.2);
+    }
+
+    .hospital-building::before {
+        content: '';
+        position: absolute;
+        top: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 60px;
+        background-color: #ffd700;
+        clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    }
+
+    .hospital-building::after {
+        content: '';
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 260px;
+        height: 30px;
+        background-color: white;
+        opacity: 0.8;
+    }
+
+    .medical-icons {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+
+    .medical-icons i {
+        position: absolute;
+        font-size: 1.8rem;
+        color: var(--primary);
+        opacity: 0;
+        animation: floatIcon 8s infinite linear;
+    }
+
+    .medical-icons i:nth-child(1) {
+        top: 20%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+
+    .medical-icons i:nth-child(2) {
+        top: 30%;
+        right: 15%;
+        animation-delay: 1s;
+    }
+
+    .medical-icons i:nth-child(3) {
+        top: 60%;
+        left: 20%;
+        animation-delay: 2s;
+    }
+
+    .medical-icons i:nth-child(4) {
+        bottom: 20%;
+        right: 25%;
+        animation-delay: 3s;
+    }
+
+    .medical-icons i:nth-child(5) {
+        bottom: 30%;
+        left: 30%;
+        animation-delay: 4s;
+    }
+
+    .data-flow {
+        position: absolute;
+        bottom: 200px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 400px;
+        height: 200px;
+        background: radial-gradient(circle, rgba(63, 177, 227, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+        animation: pulse 4s infinite alternate;
+    }
+
+    /* Features Section */
+    .features-section {
+        padding: 6rem 0;
+        background-color: var(--light-gray);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 4rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--dark);
+    }
+
+    .highlight {
+        position: relative;
+        display: inline-block;
+    }
+
+    .highlight::after {
+        content: '';
+        position: absolute;
+        bottom: 5px;
+        left: 0;
+        width: 100%;
+        height: 8px;
+        background-color: rgba(42, 127, 186, 0.2);
+        z-index: -1;
+        border-radius: 4px;
+    }
+
+    .section-subtitle {
+        font-size: 1.1rem;
+        color: var(--text-gray);
+        max-width: 700px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .feature-card {
+        background: white;
+        padding: 2.5rem 2rem;
+        border-radius: 12px;
+        text-align: center;
+        transition: var(--transition);
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--medium-gray);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .feature-icon {
+        margin-bottom: 1.5rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    .icon-animation {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, rgba(42, 127, 186, 0.1), rgba(63, 177, 227, 0.1));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+    .icon-animation i {
+        font-size: 2rem;
+        color: var(--primary);
+        z-index: 2;
+    }
+
+    .icon-animation::before {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 2px solid var(--primary-light);
+        border-radius: 50%;
+        animation: ripple 2s infinite;
+        opacity: 0;
+    }
+
+    .feature-card:hover .icon-animation::before {
+        animation: ripple 2s infinite;
+    }
+
+    .feature-card h3 {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+        color: var(--dark);
+    }
+
+    .feature-card p {
+        color: var(--text-gray);
+        margin-bottom: 1.5rem;
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    .feature-underline {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        transition: width 0.5s ease;
+    }
+
+    .feature-card:hover .feature-underline {
+        width: 100%;
+    }
+
+    /* Workflow Section */
+    .workflow-section {
+        padding: 6rem 0;
+        position: relative;
+    }
+
+    .workflow-timeline {
+        position: relative;
+        max-width: 1000px;
+        margin: 3rem auto 0;
+        padding: 0 2rem;
+    }
+
+    .workflow-timeline::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(to bottom, var(--primary), var(--accent));
+    }
+
+    .timeline-item {
+        position: relative;
+        margin-bottom: 3rem;
+        width: 100%;
+        display: flex;
+    }
+
+    .timeline-item:nth-child(odd) {
+        justify-content: flex-start;
+        padding-right: calc(50% + 2rem);
+        text-align: right;
+    }
+
+    .timeline-item:nth-child(even) {
+        justify-content: flex-end;
+        padding-left: calc(50% + 2rem);
+        text-align: left;
+    }
+
+    .timeline-icon {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 60px;
+        background: white;
+        border: 4px solid var(--primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary);
+        font-size: 1.5rem;
+        box-shadow: 0 0 0 8px white;
+        z-index: 2;
+    }
+
+    .timeline-content {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        width: calc(50% - 4rem);
+        transition: var(--transition);
+    }
+
+    .timeline-item:hover .timeline-content {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .timeline-content h3 {
+        font-size: 1.3rem;
+        margin-bottom: 0.5rem;
+        color: var(--dark);
+    }
+
+    .timeline-content p {
+        color: var(--text-gray);
+        line-height: 1.6;
+    }
+
+    /* Stats Section */
+    .stats-section {
+        padding: 4rem 0;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    .stat-card {
+        text-align: center;
+        padding: 2rem 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        backdrop-filter: blur(5px);
+        transition: var(--transition);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .stat-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: white;
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        padding: 6rem 0;
+        position: relative;
+        overflow: hidden;
+        background-color: var(--light-gray);
+    }
+
+    .cta-content {
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+    }
+
+    .cta-content h2 {
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+        color: var(--dark);
+    }
+
+    .cta-content p {
+        font-size: 1.2rem;
+        color: var(--text-gray);
+        margin-bottom: 2.5rem;
+        line-height: 1.6;
+    }
+
+    .cta-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+    }
+
+    .cta-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: var(--transition);
+        box-shadow: var(--shadow);
+    }
+
+    .primary-btn {
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        color: white;
+    }
+
+    .secondary-btn {
+        background: white;
+        color: var(--primary);
+        border: 2px solid var(--primary);
+    }
+
+    .cta-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(42, 127, 186, 0.3);
+    }
+
+    .secondary-btn:hover {
+        background: var(--primary-light);
+        color: white;
+        border-color: var(--primary-light);
+    }
+
+    .cta-floating-elements {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+    }
+
+    .floating-element {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary);
+        font-size: 1.5rem;
+        box-shadow: var(--shadow);
+        opacity: 0.8;
+        animation: float 8s infinite ease-in-out;
+    }
+
+    .element-1 {
+        top: 20%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+
+    .element-2 {
+        top: 30%;
+        right: 15%;
+        animation-delay: 2s;
+    }
+
+    .element-3 {
+        bottom: 20%;
+        left: 20%;
+        animation-delay: 4s;
+    }
+
+    .element-4 {
+        bottom: 30%;
+        right: 25%;
+        animation-delay: 6s;
+    }
+
+    /* Animations */
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+            opacity: 0.8;
+        }
+        50% {
+            transform: scale(1.05);
+            opacity: 1;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 0.8;
+        }
+    }
+
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-20px);
+        }
+    }
+
+    @keyframes floatIcon {
+        0% {
+            transform: translateY(0) rotate(0deg);
+            opacity: 0;
+        }
+        10% {
+            opacity: 1;
+        }
+        90% {
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(-100px) rotate(360deg);
+            opacity: 0;
+        }
+    }
+
+    @keyframes ripple {
+        0% {
+            transform: scale(0.8);
+            opacity: 0.5;
+        }
+        100% {
+            transform: scale(1.5);
+            opacity: 0;
+        }
+    }
+
+    @keyframes countUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1200px) {
         .hero-content h1 {
             font-size: 3rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
         }
-
-        .hero-content p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
+        
+        .section-title {
+            font-size: 2rem;
         }
+    }
 
-        .hero-btn {
-            background: linear-gradient(90deg, #ff6f61, #e74c3c);
-            color: #fff;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 1.2rem;
-            transition: transform 0.3s ease, background 0.3s ease;
+    @media (max-width: 992px) {
+        .hero-section {
+            flex-direction: column;
+            text-align: center;
+            padding: 3rem 0;
         }
-
-        .hero-btn:hover {
-            background: linear-gradient(90deg, #e74c3c, #ff6f61);
-            transform: scale(1.05);
-        }
-
-        /* Features Section */
-        .features-section {
+        
+        .hero-content {
+            padding-right: 0;
             margin-bottom: 3rem;
         }
-
-        .dashboard-header {
-            text-align: center;
-            margin-bottom: 2rem;
+        
+        .hero-buttons {
+            justify-content: center;
         }
-
-        .dashboard-header h2 {
-            font-size: 2rem;
-            color: #2c3e50;
-            font-weight: 600;
+        
+        .hero-animation {
+            height: 400px;
+            width: 100%;
         }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+        
+        .workflow-timeline::before {
+            left: 30px;
         }
-
-        .feature-card {
-            background-color: #fff;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-left: 5px solid #1abc9c;
-            animation: fadeInUp 0.8s ease-out forwards;
-            animation-delay: 0.2s;
-            opacity: 0;
+        
+        .timeline-item:nth-child(odd),
+        .timeline-item:nth-child(even) {
+            justify-content: flex-start;
+            padding-right: 0;
+            padding-left: calc(60px + 2rem);
+            text-align: left;
         }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        
+        .timeline-icon {
+            left: 30px;
         }
+        
+        .timeline-content {
+            width: 100%;
+        }
+    }
 
-        .feature-card:nth-child(2) { animation-delay: 0.4s; }
-        .feature-card:nth-child(3) { animation-delay: 0.6s; }
-
-        .feature-card i {
+    @media (max-width: 768px) {
+        .hero-content h1 {
             font-size: 2.5rem;
-            color: #1abc9c;
-            margin-bottom: 1rem;
         }
-
-        .feature-card h3 {
-            color: #2c3e50;
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
+        
+        .hero-subtitle {
+            font-size: 1.1rem;
         }
-
-        .feature-card p {
-            color: #7f8c8d;
-            font-size: 1rem;
-            margin-bottom: 1rem;
+        
+        .hero-buttons, .cta-buttons {
+            flex-direction: column;
+            align-items: center;
         }
-
-        .feature-btn {
-            background: linear-gradient(90deg, #1abc9c, #16a085);
-            color: #fff;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 1rem;
-            transition: transform 0.3s ease, background 0.3s ease;
+        
+        .hero-btn, .cta-btn {
+            width: 100%;
+            max-width: 300px;
+            justify-content: center;
         }
-
-        .feature-btn:hover {
-            background: linear-gradient(90deg, #16a085, #1abc9c);
-            transform: scale(1.05);
+        
+        .features-grid {
+            grid-template-columns: 1fr;
         }
-
-        /* Categories Section */
-        .categories-section {
-            margin-bottom: 3rem;
+        
+        .stats-grid {
+            grid-template-columns: 1fr 1fr;
         }
+    }
 
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .dashboard-card {
-            background-color: #fff;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            border-left: 5px solid #1abc9c;
-            animation: fadeInUp 0.8s ease-out forwards;
-            opacity: 0;
-        }
-
-        .dashboard-card:nth-child(1) { animation-delay: 0.2s; }
-        .dashboard-card:nth-child(2) { animation-delay: 0.4s; }
-        .dashboard-card:nth-child(3) { animation-delay: 0.6s; }
-        .dashboard-card:nth-child(4) { animation-delay: 0.8s; }
-
-        .dashboard-card i {
+    @media (max-width: 576px) {
+        .hero-content h1 {
             font-size: 2rem;
-            color: #1abc9c;
-            margin-bottom: 0.5rem;
         }
+        
+        .section-title {
+            font-size: 1.8rem;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
 
-        .dashboard-card h3 {
-            font-size: 1.2rem;
-            color: #2c3e50;
-            margin-bottom: 0.5rem;
-        }
-
-        .dashboard-card p {
-            font-size: 0.9rem;
-            color: #7f8c8d;
-        }
-
-        /* CTA Banner */
-        .cta-banner {
-            background: linear-gradient(90deg, #ff6f61, #e74c3c);
-            padding: 3rem;
-            text-align: center;
-            border-radius: 12px;
-            color: #fff;
-            margin-bottom: 3rem;
-            animation: fadeIn 1s ease-out;
-        }
-
-        .cta-content h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .cta-content p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-        }
-
-        .cta-btn {
-            background: linear-gradient(90deg, #1abc9c, #16a085);
-            color: #fff;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 1.2rem;
-            transition: transform 0.3s ease, background 0.3s ease;
-        }
-
-        .cta-btn:hover {
-            background: linear-gradient(90deg, #16a085, #1abc9c);
-            transform: scale(1.05);
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes fadeInSlide {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .hero-section {
-                height: 400px;
-            }
-            .hero-content h1 {
-                font-size: 2.5rem;
-            }
-            .hero-content p {
-                font-size: 1rem;
-            }
-            .features-grid, .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Count up animation for stats
+        const statNumbers = document.querySelectorAll('.stat-number');
+        
+        const animateCountUp = (element) => {
+            const target = parseInt(element.getAttribute('data-count'));
+            const duration = 2000;
+            const start = 0;
+            const increment = target / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    clearInterval(timer);
+                    current = target;
+                }
+                element.textContent = Math.floor(current).toLocaleString();
+            }, 16);
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCountUp(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        statNumbers.forEach(number => {
+            observer.observe(number);
+        });
+        
+        // Animate elements on scroll
+        const animateOnScroll = function() {
+            const elements = document.querySelectorAll('.feature-card, .timeline-item, .stat-card');
+            
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.3;
+                
+                if (elementPosition < screenPosition) {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        };
+        
+        // Set initial state for animated elements
+        document.querySelectorAll('.feature-card, .timeline-item, .stat-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        });
+        
+        window.addEventListener('scroll', animateOnScroll);
+        animateOnScroll(); // Run once on load
+    });
+</script>
 {% endblock %}
